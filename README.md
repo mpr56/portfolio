@@ -1,7 +1,4 @@
-# Portfolio — interactive 3D desk scene
-
-A single continuous WebGL scene with DOM panels over the top. Inspired by
-[growon.kr](https://growon.kr).
+# Portfolio 
 
 ```bash
 npm run dev        # http://localhost:5173
@@ -54,19 +51,6 @@ Budgets live in the `MODELS` map in `scripts/optimize.mjs`. If a model won't hit
 its triangle target, raise its `error` — meshopt stops early when the error
 budget would be exceeded, which silently overrides `ratio`.
 
-## Working on the scene
-
-Placement is much easier to verify with numbers than with eyes:
-
-```bash
-node scripts/measure.mjs                          # bounds of every prop, flags
-                                                  # anything below the floor
-node scripts/shot.mjs http://localhost:5173 out.png --dark
-node scripts/shot.mjs http://localhost:5173 out.png --focus=-1.7,0.7,0.3,1.6
-```
-
-`measure.mjs` catches the failure modes screenshots hide — a prop underground, a
-model that silently failed to load, two objects intersecting.
 
 ## Credits
 
