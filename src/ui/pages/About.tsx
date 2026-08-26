@@ -4,8 +4,11 @@ export function About() {
   return (
     <Panel eyebrow="00 — Studio" title="About">
       <p className="lede">
-        A short paragraph about who you are and what you make. Two or three sentences is plenty —
-        the scene has already done the talking.
+        Current student at the University of Technology Sydney, studying a Bachelor of Computer Science (Cyber). I have a passion for software development and have been working in the field for the good part of 3 years. 
+        <br/> <br/>
+        Carrying a strong interest in web development, I have experience with a variety of technologies including React, Node.js, and TypeScript. 
+        <br/> <br/>
+        Apart from boring stuff I also have enormous passion for videography and have experience with video editing and production.
       </p>
       <p>
         Follow it with the practical detail: what you work on, who you work with, and what someone
@@ -24,7 +27,7 @@ export function About() {
         <div>
           <dt>Contact</dt>
           <dd>
-            <a href="mailto:manav.preet@gmail.com">manav.preet@gmail.com</a>
+            <a href="mailto:manav.preet.contact@gmail.com">manav.preet.contact@gmail.com</a>
           </dd>
         </div>
       </dl>
