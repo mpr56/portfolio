@@ -36,10 +36,11 @@ export function Intro() {
   return (
     <div className={`intro ${entered ? 'is-gone' : ''}`} aria-hidden={entered}>
       <div className="intro__inner">
-        <p className="intro__mark">M.</p>
+        <p className="intro__mark">Manav P.</p>
         <div className="intro__bar">
           <span style={{ transform: `scaleX(${Math.min(progress, 100) / 100})` }} />
         </div>
+        <p>Explore by interacting with the objects.</p>
       </div>
     </div>
   )

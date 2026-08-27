@@ -41,7 +41,8 @@ export function ProjectPage() {
             sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
           />
         ) : (
-          <span className="demo__placeholder">Website demo goes in this box</span>
+          // <span className="demo__placeholder">Website demo goes in this box</span>
+          <p>Website demo goes in this box</p>
         )}
       </div>
       {project.demo.title && <figcaption>{project.demo.title}</figcaption>}

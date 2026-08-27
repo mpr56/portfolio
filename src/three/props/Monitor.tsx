@@ -39,11 +39,7 @@ export const SCREEN_ASPECT = SCREEN.width / SCREEN.height
 export function Monitor() {
   const navigate = useNavigate()
   const screenMat = useRef<THREE.MeshStandardMaterial>(null)
-  const map = useScreenTexture(
-    'PROJECTS',
-    ['Selected work — 2023 to now', 'Web, interaction, motion', 'Click to open ↗'],
-    SCREEN_ASPECT,
-  )
+  const map = useScreenTexture(SCREEN_ASPECT)
 
   useFrame(() => {
     // intro.screen flickers the panel on during the opening, then holds at 1.
