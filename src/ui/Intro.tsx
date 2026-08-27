@@ -40,7 +40,7 @@ export function Intro() {
         <div className="intro__bar">
           <span style={{ transform: `scaleX(${Math.min(progress, 100) / 100})` }} />
         </div>
-        <p>Explore by interacting with the objects.</p>
+        <p>Explore by interacting with the objects. You can interact with (almost) everything!</p>
       </div>
     </div>
   )

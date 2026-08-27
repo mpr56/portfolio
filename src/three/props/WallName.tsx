@@ -181,7 +181,7 @@ export function WallName() {
             {TEXT}
             <meshStandardMaterial
               ref={faceMaterial}
-              color="#191a1f"
+              color="#030303"
               emissive={LAMP_LIGHT.color}
               emissiveIntensity={0.05}
               roughness={0.42}
