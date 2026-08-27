@@ -6,7 +6,7 @@ export function About() {
       <p className="lede">
         Current student at the University of Technology Sydney, studying a Bachelor of Computer Science (Cyber). I have a passion for software development and have been working in the field for the good part of 3 years. 
         <br/> <br/>
-        Carrying a strong interest in web development, I have experience with a variety of technologies including React, Node.js, and TypeScript. 
+        Carrying a strong interest in web development, I have experience with a variety of technologies including React, Node.js, and TypeScript. Alongside frontend, I also have experience with backend development and AWS services.
         <br/> <br/>
         Apart from boring stuff I also have enormous passion for videography and have experience with video editing and production.
       </p>

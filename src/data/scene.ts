@@ -126,10 +126,16 @@ export const getShot = (pathname: string): Shot => {
 /** Day / night palettes. Every themed material lerps between the two. */
 export const PALETTE = {
   day: {
-    background: new THREE.Color('#5b79ab'),
-    fog: new THREE.Color('#5b79ab'),
-    floor: new THREE.Color('#6d86a6'),
-    ambient: new THREE.Color('#93b0d6'),
+    // Sage. Kept cool and well desaturated on purpose: nearly everything on the
+    // desk is warm — the wood, the lamp, the sign — so a cool, muted backdrop
+    // pushes them forward. A warm backdrop of the same lightness lets the dark
+    // desk dissolve into the wall behind it.
+    background: new THREE.Color('#6f8571'),
+    fog: new THREE.Color('#6f8571'),
+    floor: new THREE.Color('#7d9480'),
+    // Tints every object in the scene, not just the backdrop — this is the one
+    // to keep muted, or the whole room takes on the cast.
+    ambient: new THREE.Color('#a8c0a4'),
     ambientIntensity: 1.15,
     keyColor: new THREE.Color('#fdf6e8'),
     keyIntensity: 2.6,

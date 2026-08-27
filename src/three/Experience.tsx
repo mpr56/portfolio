@@ -77,8 +77,13 @@ export function Experience() {
       gl={{ antialias: true, powerPreference: 'high-performance' }}
       camera={{ position: SHOTS['/'].position, fov: SHOTS['/'].fov, near: 0.1, far: 60 }}
       onCreated={({ scene, gl, camera }) => {
-        scene.background = new THREE.Color('#5b79ab')
-        scene.fog = new THREE.Fog('#5b79ab', 12, 34)
+        // Seeded from the palette rather than a repeated literal: ThemeDriver
+        // overwrites both on the first frame, so a hardcoded colour here only
+        // shows up as a one-frame flash of the old scheme after a palette
+        // change — and nothing points at it to say why.
+        // Cloned because Lighting mutates these in place every frame.
+        scene.background = PALETTE.day.background.clone()
+        scene.fog = new THREE.Fog(PALETTE.day.fog.getHex(), 12, 34)
         gl.toneMappingExposure = 1.05
         // Dev handle for scripts/measure.mjs — lets placement be measured
         // against the real scene graph instead of eyeballed from a screenshot.
