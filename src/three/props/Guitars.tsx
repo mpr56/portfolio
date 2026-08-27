@@ -85,7 +85,7 @@ function Hung({ model, z, bottom, scale = 1, upright = false }: HungProps) {
 
 /** The instrument wall — a StingRay bass alongside an Ibanez JEM. */
 export function Guitars() {
-  const { isPlaying, toggle } = useAudio('guitars', '/audio/guitar.mp3', { volume: 0.55 })
+  const { isPlaying, toggle } = useAudio('guitars', '/audio/guitarRiff.mp3', { volume: 0.55 })
   const group = useRef<THREE.Group>(null)
   const t = useRef(0)
 

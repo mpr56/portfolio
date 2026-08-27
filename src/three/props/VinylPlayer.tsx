@@ -62,7 +62,7 @@ function Record({ spinning }: { spinning: boolean }) {
 }
 
 export function VinylPlayer() {
-  const { isPlaying, toggle } = useAudio('vinyl', '/audio/vinyl.mp3', { loop: true, volume: 0.5 })
+  const { isPlaying, toggle } = useAudio('vinyl', '/audio/vinlySong.mp3', { loop: true, volume: 0.5 })
   const root = useModel('vinyl')
 
   return (

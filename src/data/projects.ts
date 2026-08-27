@@ -1,10 +1,5 @@
-/**
- * Project content. Replace with real work — every field except `slug`, `title`
- * and `year` is optional, and the detail view drops whatever is missing rather
- * than rendering an empty heading.
- */
+
 export type Project = {
-  /** URL fragment, so a project can be linked to directly. */
   slug: string
   title: string
   role: string
@@ -31,7 +26,7 @@ export const PROJECTS: Project[] = [
     title: 'Property Hub',
     role: 'Frontend + Backend + Database',
     year: '2025',
-    blurb: 'A short line about what it was and what you did on it.',
+    blurb: 'A dashboard built for property managers to track existing properties with every aspect of the property management lifecycle.',
     summary:
       'A dashboard built for poperty managers to track exisitng properites with every aspect of the property management lifecycle. Syncs council rates, water bills, termite inpsections, periodic inspections and maintenance tasks with real time tracking and notifications so you never miss a thing. Built with React, Next.js and TypeScript.',
     stack: ['React', 'TypeScript', 'Next.js', 'Postgres'],
@@ -46,21 +41,21 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'project-two',
-    title: 'Project Two',
-    role: 'Front-end',
+    title: 'Receiptly',
+    role: 'Frontend, Backend + AI integration',
     year: '2026',
-    blurb: 'Under development.',
-    summary: 'Under development.',
-    stack: ['Next.js', 'Postgres'],
-    highlights: ['Under development.', 'Under development.'],
+    blurb: 'A simple app to scan and manage your receipts with AI ocr integration.',
+    summary: 'This app combines the power of AI and OCR technology to provide a seamless experience for managing receipts. Users can easily scan, store, and categorize their receipts, making expense tracking effortless.',
+    stack: ['Next.js', 'TypeScript', 'AI Integration', 'Postgres'],
+    highlights: ['Using AI-powered OCR for accurate receipt scanning', 'Ensuring data security and seperation for user data'],
   },
   {
     slug: 'project-three',
     title: 'Project Three',
-    role: 'Interaction',
+    role: 'Under development',
     year: '2026',
     blurb: 'Under development.',
     summary: 'Under development.',
-    stack: ['WebGL', 'GSAP'],
+    stack: ['Under development'],
   },
 ]
