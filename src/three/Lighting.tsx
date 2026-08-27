@@ -1,8 +1,15 @@
-import { useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { intro, mixColor, mixNumber } from './theme'
 import { LAMP_HEAD, LAMP_LIGHT } from '../data/scene'
+
+/**
+ * Phones get a half-resolution shadow map for the lamp. Decided once at mount:
+ * changing `mapSize` later forces the map to be reallocated, and at phone size
+ * nobody can tell 512 from 1024 in a soft pool of light.
+ */
+const LAMP_SHADOW = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches ? 512 : 1024
 
 /**
  * All scene lighting, including the warm pool the lamp throws at night.
@@ -15,6 +22,17 @@ export function Lighting() {
   const key = useRef<THREE.DirectionalLight>(null)
   const lamp = useRef<THREE.SpotLight>(null)
   const lampTarget = useRef<THREE.Object3D>(null)
+
+  useLayoutEffect(() => {
+    // Draw the lamp's shadow map once at startup, while it is still dark.
+    //
+    // The map has to exist before anything samples it: a shadow-casting light
+    // whose map was never rendered leaves a plain colour texture bound to a
+    // sampler2DShadow, which the driver rejects outright
+    // (GL_INVALID_OPERATION) and the frame is lost. autoUpdate below then
+    // stops it being redrawn every frame while the lamp is off.
+    if (lamp.current) lamp.current.shadow.needsUpdate = true
+  }, [])
 
   useFrame(() => {
     // intro.lights ramps the room up on load. The lamp is deliberately left out
@@ -31,8 +49,19 @@ export function Lighting() {
     }
     if (lamp.current) {
       lamp.current.intensity = mixNumber('lampIntensity')
-      // Shadow casting is pure cost while the lamp is off.
-      lamp.current.castShadow = lamp.current.intensity > 0.5
+      // The lamp casts shadows from the very first frame, even while it is off.
+      //
+      // Turning castShadow on at click time changes how many shadow-casting
+      // lights the scene has, and three recompiles *every* material when that
+      // count changes — measured at 36 new shader programs, which is a stall of
+      // seconds on a desktop and 20-30s on a phone. It was the entire reason the
+      // first lamp click was so slow, and it only ever happened once per load.
+      //
+      // A light at intensity 0 contributes nothing, so leaving it on is free
+      // visually. Only the shadow map's per-frame refresh is worth gating, and
+      // that is what autoUpdate does — no recompile, because the light's
+      // castShadow flag (which is what the shader variant keys on) never moves.
+      lamp.current.shadow.autoUpdate = lamp.current.intensity > 0.5
       // Bind the aim point once it exists; three defaults target to the origin.
       if (lampTarget.current && lamp.current.target !== lampTarget.current) {
         lamp.current.target = lampTarget.current
@@ -74,7 +103,8 @@ export function Lighting() {
         distance={LAMP_LIGHT.distance}
         decay={LAMP_LIGHT.decay}
         intensity={0}
-        shadow-mapSize={[1024, 1024]}
+        castShadow
+        shadow-mapSize={[LAMP_SHADOW, LAMP_SHADOW]}
         shadow-bias={-0.0006}
         shadow-normalBias={0.02}
       />

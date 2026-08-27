@@ -64,7 +64,7 @@ function Hung({ model, z, bottom, scale = 1, upright = false }: HungProps) {
   return (
     <group position={[0, 0, z]}>
       {/* Cradle the neck just below the headstock, where a real hanger sits. */}
-      <group position={[0.03, top - 0.09, 0]}>
+      <group position={[0.015, top - 0.22, 0.02]}>
         <Hanger />
       </group>
 

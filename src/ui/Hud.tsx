@@ -42,9 +42,9 @@ export function Hud() {
 
       <header className={`headline ${home ? '' : 'headline--out'}`}>
         <h1>
-          Solving problems
+          Making things. Breaking things. 
           <br />
-          by breaking through the norms.
+          Learning everything along the way.
         </h1>
         <p>Full time Software developer, full time UTS student & inspiring videographer</p>
       </header>

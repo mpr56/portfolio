@@ -1,14 +1,18 @@
-import { Suspense, useState } from 'react'
+import { Suspense, useRef, useState } from 'react'
 import * as THREE from 'three'
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { AdaptiveDpr, PerformanceMonitor, Preload } from '@react-three/drei'
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
+import type { BloomEffect, VignetteEffect } from 'postprocessing'
 
-import { ThemeDriver } from './theme'
+import { ThemeDriver, themeMix } from './theme'
 import { Rig } from './Rig'
 import { Lighting } from './Lighting'
 import { useScene } from '../store'
-import { SHOTS } from '../data/scene'
+import { PALETTE, SHOTS } from '../data/scene'
+
+/** Linear blend, matching how every other themed value samples the mix. */
+const mix = (day: number, night: number, t: number) => day + (night - day) * t
 
 import { Room } from './props/Room'
 import { Desk } from './props/Desk'
@@ -22,17 +26,41 @@ import { CarModel } from './props/CarModel'
 import { VhsShelf } from './props/VhsShelf'
 import { WallName } from './props/WallName'
 
+/**
+ * Bloom and vignette, driven off the shared day→night mix in useFrame rather
+ * than from the `dark` boolean as React props.
+ *
+ * Two reasons. Re-rendering the effect stack on every toggle made the composer
+ * rebuild its passes, which is wasted work at exactly the moment the scene is
+ * busiest. And as props these two snapped between values while every other
+ * themed material eased, so the grade jumped a frame ahead of the room — now
+ * they dissolve with everything else.
+ */
 function Effects() {
-  const dark = useScene((s) => s.dark)
+  const bloom = useRef<BloomEffect>(null)
+  const vignette = useRef<VignetteEffect>(null)
+
+  useFrame(() => {
+    const night = themeMix.value
+    if (bloom.current) {
+      bloom.current.intensity = mix(PALETTE.day.bloom, PALETTE.night.bloom, night)
+      bloom.current.luminanceMaterial.threshold = mix(0.85, 0.62, night)
+    }
+    if (vignette.current) {
+      vignette.current.darkness = mix(PALETTE.day.vignette, PALETTE.night.vignette, night)
+    }
+  })
+
   return (
     <EffectComposer enableNormalPass={false}>
       <Bloom
+        ref={bloom}
         mipmapBlur
-        intensity={dark ? 0.95 : 0.32}
-        luminanceThreshold={dark ? 0.62 : 0.85}
+        intensity={PALETTE.day.bloom}
+        luminanceThreshold={0.85}
         luminanceSmoothing={0.22}
       />
-      <Vignette offset={0.28} darkness={dark ? 0.86 : 0.6} eskil={false} />
+      <Vignette ref={vignette} offset={0.28} darkness={PALETTE.day.vignette} eskil={false} />
     </EffectComposer>
   )
 }

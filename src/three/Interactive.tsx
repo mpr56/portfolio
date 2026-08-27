@@ -24,7 +24,7 @@ type Props = {
  * There is deliberately no floating label — the cursor is the affordance.
  */
 /** How much a hovered prop grows. Small — this is a nudge, not a pop. */
-const SCALE = 1.015
+const SCALE = 1.02
 
 const _box = new THREE.Box3()
 
