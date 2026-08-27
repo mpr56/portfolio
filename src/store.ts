@@ -10,6 +10,7 @@ export type PropId =
   | 'chair'
   | 'plant'
   | 'desk'
+  | 'name'
 
 type SceneState = {
   /** false = daylight, true = lamp-lit night. Driven by clicking the lamp. */
@@ -18,6 +19,14 @@ type SceneState = {
 
   muted: boolean
   toggleMuted: () => void
+
+  /**
+   * The wall sign's own switch. Independent of dark mode: the lamp lights the
+   * room, this lights the letters, and clicking them cuts the glow the way
+   * pulling the plug on a real sign would.
+   */
+  signOn: boolean
+  toggleSign: () => void
 
   /** Which prop the pointer is currently over — drives cursor + hover label. */
   hovered: PropId | null
@@ -49,6 +58,9 @@ export const useScene = create<SceneState>((set, get) => ({
 
   muted: true,
   toggleMuted: () => set({ muted: !get().muted }),
+
+  signOn: true,
+  toggleSign: () => set({ signOn: !get().signOn }),
 
   hovered: null,
   setHovered: (id) => set({ hovered: id }),

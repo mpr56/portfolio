@@ -20,6 +20,7 @@ import { VinylPlayer } from './props/VinylPlayer'
 import { Guitars } from './props/Guitars'
 import { CarModel } from './props/CarModel'
 import { VhsShelf } from './props/VhsShelf'
+import { WallName } from './props/WallName'
 
 function Effects() {
   const dark = useScene((s) => s.dark)
@@ -86,6 +87,7 @@ export function Experience() {
         <Guitars />
         <CarModel />
         <VhsShelf />
+        <WallName />
         <Preload all />
       </Suspense>
 

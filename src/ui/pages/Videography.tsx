@@ -10,9 +10,6 @@ type Film = {
 
 const FILMS: Film[] = [
   { title: 'Reel 2026', kind: 'Showreel', year: '2026' },
-  { title: 'Short Film', kind: 'Director / Editor', year: '2025' },
-  { title: 'Music Video', kind: 'DP', year: '2025' },
-  { title: 'Brand Spot', kind: 'Edit & grade', year: '2024' },
 ]
 
 export function Videography() {

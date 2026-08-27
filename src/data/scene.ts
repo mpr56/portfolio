@@ -66,6 +66,14 @@ export const LAYOUT = {
   car: { position: [-0.02, SURFACE, -0.28] as Vec3 },
   car2: { position: [0.32, SURFACE, -0.36] as Vec3 },
   vinyl: { position: [0.72, SURFACE, -0.4] as Vec3 },
+  /**
+   * Dimensional letters on the left wall, above the monitor. Turned a quarter
+   * turn so the glyphs face +X off that wall.
+   */
+  name: {
+    position: [WALLS.left + 0.012, 1.52, 0.4] as Vec3,
+    rotation: [0, Math.PI / 2, 0] as Vec3,
+  },
   /** Tucked into the inside corner, turned toward the monitor. */
   chair: { position: [0.12, 0, 0.78] as Vec3, rotation: [0, 1, 0] as Vec3 },
   /** Stands to the right; its arc sweeps back over the long wing. */

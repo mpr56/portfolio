@@ -7,6 +7,11 @@ type Props = {
   /** Where back and the scrim lead. Defaults to the scene. */
   backTo?: string
   backLabel?: string
+  /**
+   * Optional content for the open space beside the sheet — a live demo, say.
+   * The scrim still shows through around it, so clicking past it still closes.
+   */
+  aside?: ReactNode
   children: ReactNode
 }
 
@@ -23,6 +28,7 @@ export function Panel({
   eyebrow,
   backTo = '/',
   backLabel = 'Back to the desk',
+  aside,
   children,
 }: Props) {
   const navigate = useNavigate()
@@ -41,6 +47,8 @@ export function Panel({
       {/* Everything left of the sheet closes on click. Labelled rather than a
           bare div so it isn't a trap for keyboard and screen-reader users. */}
       <button className="panel__scrim" onClick={close} aria-label={`Close ${title}`} tabIndex={-1} />
+
+      {aside && <div className="panel__aside">{aside}</div>}
 
       <div className="panel__sheet">
         <button className="panel__back" onClick={close}>

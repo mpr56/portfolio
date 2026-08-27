@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { useParams } from 'react-router-dom'
 import { Panel } from '../Panel'
 import { PROJECTS } from '../../data/projects'
@@ -19,12 +20,41 @@ export function ProjectPage() {
     )
   }
 
+  // Lives in the open space beside the sheet rather than inside it, so the
+  // demo gets the room it needs and the write-up stays readable next to it.
+  const demo = project.demo ? (
+    <figure className="demo">
+      {/* The zoom is a scale on the iframe paired with an inverse size, so the
+          embedded page lays out at a bigger viewport and is drawn smaller —
+          rather than being squeezed into a narrow one and flipping to its own
+          mobile layout. */}
+      <div
+        className="demo__frame"
+        style={{ '--demo-zoom': project.demo.zoom ?? 1 } as CSSProperties}
+      >
+        {project.demo.src ? (
+          <iframe
+            src={project.demo.src}
+            title={project.demo.title ?? `${project.title} demo`}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          />
+        ) : (
+          <span className="demo__placeholder">Website demo goes in this box</span>
+        )}
+      </div>
+      {project.demo.title && <figcaption>{project.demo.title}</figcaption>}
+    </figure>
+  ) : null
+
   return (
     <Panel
       eyebrow={`${project.role} · ${project.year}`}
       title={project.title}
       backTo="/projects"
       backLabel="Back to projects"
+      aside={demo}
     >
       {project.image && <img className="work__image" src={project.image} alt="" loading="lazy" />}
 

@@ -16,9 +16,30 @@ export type Project = {
   stack?: string[]
   /** Bullets: what you actually did. */
   highlights?: string[]
+  /**
+   * Buttons under "Links". Leave this off entirely and the whole section
+   * disappears — that is how a project opts out of having a visit link.
+   */
   links?: { label: string; href: string }[]
   /** Optional hero image, e.g. "/work/one.jpg" in public/. */
   image?: string
+  /**
+   * A live demo, shown in the open space beside the write-up. `src` is any URL
+   * that allows being framed — your own deployments will, most third-party
+   * sites will not, since they send X-Frame-Options. Leave `src` empty to get
+   * the placeholder box while the deployment is still being set up.
+   */
+  demo?: {
+    src: string
+    title?: string
+    /**
+     * Scales the embedded page. Below 1 zooms *out*: the frame is handed a
+     * proportionally larger logical viewport and then scaled down, so more of
+     * the site fits without it rendering its own mobile layout. Around 0.7–0.8
+     * suits a dashboard; 1 leaves it at native size.
+     */
+    zoom?: number
+  }
 }
 
 export const PROJECTS: Project[] = [
@@ -36,7 +57,8 @@ export const PROJECTS: Project[] = [
       'A constraint you worked around, and how.',
       'A result — a number if you have one.',
     ],
-    links: [{ label: 'Visit site', href: 'https://example.com' }],
+    links: [{ label: 'Visit site', href: 'https://property-hub-demo.vercel.app' }],
+    demo: { src: 'https://property-hub-demo.vercel.app', title: 'Dashboard demo', zoom: 0.75 },
   },
   {
     slug: 'project-two',
