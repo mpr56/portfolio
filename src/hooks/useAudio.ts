@@ -32,19 +32,26 @@ export function useAudio(id: PropId, src: string, opts: { loop?: boolean; volume
     return el.current
   }, [src, loop, volume, id, setPlaying])
 
+  const stop = useCallback(() => {
+    const a = el.current
+    if (a) {
+      a.pause()
+      a.currentTime = 0
+    }
+    if (useScene.getState().playing === id) setPlaying(null)
+  }, [id, setPlaying])
+
   const toggle = useCallback(() => {
     const a = element()
     if (useScene.getState().playing === id) {
-      a.pause()
-      a.currentTime = 0
-      setPlaying(null)
+      stop()
       return
     }
     setPlaying(id)
     a.currentTime = 0
     // Autoplay policy and 404s both land here — swallow, keep the visuals going.
     a.play().catch(() => {})
-  }, [element, id, setPlaying])
+  }, [element, id, setPlaying, stop])
 
   // Another prop took over playback, or the visitor hit mute.
   useEffect(() => {
@@ -66,5 +73,5 @@ export function useAudio(id: PropId, src: string, opts: { loop?: boolean; volume
     [],
   )
 
-  return { isPlaying, toggle }
+  return { isPlaying, toggle, stop }
 }

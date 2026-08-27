@@ -11,8 +11,7 @@ export function About() {
         Apart from boring stuff I also have enormous passion for videography and have experience with video editing and production.
       </p>
       <p>
-        Follow it with the practical detail: what you work on, who you work with, and what someone
-        should get in touch about.
+        I am always looking for new opportunities to learn and problems to tackle. I am eager to grow as a developer and I am excited to see what the future holds. If you are interested in working with me or just want to say hi, please feel free to reach out!
       </p>
 
       <dl className="meta">

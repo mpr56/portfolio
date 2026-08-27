@@ -9,6 +9,7 @@ export type ModelName =
   | 'chair'
   | 'car'
   | 'car2'
+  | 'car3'
   | 'camcorder'
   | 'vhscam'
   | 'sonycam'

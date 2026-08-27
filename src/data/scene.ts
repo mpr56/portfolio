@@ -65,6 +65,7 @@ export const LAYOUT = {
   /** Two die-casts side by side between the cameras and the record player. */
   car: { position: [-0.02, SURFACE, -0.28] as Vec3 },
   car2: { position: [0.32, SURFACE, -0.36] as Vec3 },
+  car3: { position: [0.12, SURFACE, -0.55] as Vec3},
   vinyl: { position: [0.72, SURFACE, -0.4] as Vec3 },
   /**
    * Dimensional letters on the left wall, above the monitor. Turned a quarter
@@ -75,7 +76,7 @@ export const LAYOUT = {
     rotation: [0, Math.PI / 2, 0] as Vec3,
   },
   /** Tucked into the inside corner, turned toward the monitor. */
-  chair: { position: [0.12, 0, 0.78] as Vec3, rotation: [0, 1, 0] as Vec3 },
+  chair: { position: [0.12, 0, 0.78] as Vec3, rotation: [0, -1.8, 0] as Vec3 },
   /** Stands to the right; its arc sweeps back over the long wing. */
   lamp: { position: [1.72, 0, -0.15] as Vec3, rotation: [0, -0.12, 0] as Vec3 },
   /** On the floor, in front of the return. */

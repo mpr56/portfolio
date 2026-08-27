@@ -12,6 +12,8 @@ type Props = {
    * The scrim still shows through around it, so clicking past it still closes.
    */
   aside?: ReactNode
+  /** Optional controls pinned at the sheet's upper-right corner. */
+  actions?: ReactNode
   children: ReactNode
 }
 
@@ -29,6 +31,7 @@ export function Panel({
   backTo = '/',
   backLabel = 'Back to the desk',
   aside,
+  actions,
   children,
 }: Props) {
   const navigate = useNavigate()
@@ -51,6 +54,7 @@ export function Panel({
       {aside && <div className="panel__aside">{aside}</div>}
 
       <div className="panel__sheet">
+        {actions && <div className="panel__actions">{actions}</div>}
         <button className="panel__back" onClick={close}>
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8">
             <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />

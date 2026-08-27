@@ -96,6 +96,16 @@ const MODELS = {
     // The M3 GTR is a shade shorter than an F40, so the pair stay in proportion.
     size: { axis: 'z', value: 0.285 },
   },
+  car3: {
+    // Kept at the repository root as the untouched download, alongside the
+    // F40 source. The pipeline writes the web-ready copy to public/models.
+    source: '.',
+    file: '2018_mazda_rx-7_fd3s_fatal_stinger.glb',
+    texture: 512,
+    ratio: 0.45,
+    error: 0.015,
+    size: { axis: 'z', value: 0.275 },
+  },
   // The videography cluster. Three real camcorders rather than the earlier
   // DSLR + generic camcorder pair.
   camcorder: {
@@ -235,7 +245,7 @@ let before = 0
 let after = 0
 
 for (const [name, cfg] of targets) {
-  const src = resolve(SRC, cfg.file)
+  const src = resolve(cfg.source ?? SRC, cfg.file)
   if (!existsSync(src)) {
     console.log(`⚠  ${name.padEnd(10)} missing: ${cfg.file}`)
     continue
