@@ -14,7 +14,7 @@ export function ProjectPage() {
 
   if (!project) {
     return (
-      <Panel eyebrow="01 — Work" title="Not found" backTo="/projects" backLabel="Back to projects">
+      <Panel eyebrow="01 | Work" title="Not found" backTo="/projects" backLabel="Back to projects">
         <p>That project doesn’t exist. It may have been renamed.</p>
       </Panel>
     )

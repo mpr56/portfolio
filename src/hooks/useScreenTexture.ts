@@ -86,7 +86,7 @@ export function useScreenTexture(aspect = 3.5) {
       ctx.arc(50 + index * 20, 45, 6, 0, Math.PI * 2)
       ctx.fill()
     })
-    text('portfolio — Visual Studio Code', 130, 36, `500 16px ${sans}`, '#a9b7c6')
+    text('portfolio | Visual Studio Code', 130, 36, `500 16px ${sans}`, '#a9b7c6')
     rect(24, 66, 50, h - 90, '#161f2a')
     text('⌘', 41, 95, `500 19px ${sans}`, '#7d91a6')
     text('⌕', 42, 140, `500 23px ${sans}`, '#7d91a6')

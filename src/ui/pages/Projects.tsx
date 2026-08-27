@@ -4,7 +4,7 @@ import { PROJECTS } from '../../data/projects'
 
 export function Projects() {
   return (
-    <Panel eyebrow="01 — Work" title="Projects">
+    <Panel eyebrow="01 | Work" title="Projects">
       <ul className="worklist">
         {PROJECTS.map((p) => (
           <li key={p.slug}>

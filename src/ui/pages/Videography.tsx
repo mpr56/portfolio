@@ -9,7 +9,7 @@ export function Videography() {
 
   return (
     <Panel
-      eyebrow="02 — Motion"
+      eyebrow="02 | Motion"
       title="Videography"
       actions={
         <button
