@@ -4,12 +4,9 @@ export type Project = {
   title: string
   role: string
   year: string
-  /** One line, shown in the list. */
   blurb: string
-  /** A few sentences, shown when the project is opened. */
   summary?: string
   stack?: string[]
-  /** Bullets: what you actually did. */
   highlights?: string[]
   links?: { label: string; href: string }[]
   image?: string
@@ -53,12 +50,14 @@ export const PROJECTS: Project[] = [
   },
     {
     slug: 'project-three',
-    title: 'Plenty more on the way',
+    title: 'No Trust Media',
     role: 'Under development',
     year: '2026',
-    blurb: 'Under development.',
-    summary: 'Under development.',
-    stack: ['Under development'],
+    blurb: 'on the way.',
+    summary: 'on the way.',
+    stack: ['on the way'],
+    links: [{ label: 'Visit site', href: 'https://notrustmedia.com' }],
+    demo: { src: 'https://notrustmedia.com', title: 'No Trust Media Demo', zoom: 1 },
   },
   {
     slug: 'project-three',
