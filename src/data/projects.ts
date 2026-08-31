@@ -38,15 +38,15 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'project-two',
-    title: 'Receiptly (DEMO)',
+    title: 'Receiptify (DEMO)',
     role: 'Frontend + Backend + AI integration',
     year: '2026',
     blurb: 'A simple app to scan and manage your receipts with AI ocr integration.',
     summary: `I got sick of loosing all of my receipts, so I built myself an app instead. This app combines the power of AI and OCR technology to provide a seamless experience for managing receipts. Users can easily scan, store, and categorize their receipts, making expense tracking effortless. This app is currently in demo phase and the database has not been set up yet.`,
     stack: ['Next.js', 'TypeScript', 'AI Integration', 'Postgres'],
     highlights: ['Using AI-powered OCR for accurate receipt scanning', 'Ensuring data security and seperation for user data'],
-    links: [{ label: 'Visit site', href: 'https://receiptly-store.vercel.app' }],
-    demo: { src: 'https://receiptly-store.vercel.app', title: 'Receiptly Demo', zoom: 1 },
+    links: [{ label: 'Visit site', href: 'https://receiptify-store.vercel.app' }],
+    demo: { src: 'https://receiptify-store.vercel.app', title: 'Receiptify Demo', zoom: 1 },
   },
     {
     slug: 'project-three',
