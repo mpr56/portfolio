@@ -139,6 +139,19 @@ const MODELS = {
     error: 0.008,
     size: { axis: 'y', value: 1.35 },
   },
+  // 73k triangles for something 147mm long lying flat on a desk is absurd, so
+  // this takes the hardest cut in the set. It survives it because a phone is
+  // flat panels and rounded corners — the silhouette that matters is the
+  // outline, and that is exactly what simplify preserves. Its own screen is
+  // irrelevant too: Phone.tsx lays an emissive panel over the glass the way
+  // the monitor does, so the baked one is never seen.
+  phone: {
+    file: 'iphone_12_pro.glb',
+    texture: 512,
+    ratio: 0.12,
+    error: 0.01,
+    size: { axis: 'y', value: 0.147 },
+  },
 }
 
 /**

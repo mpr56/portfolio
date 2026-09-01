@@ -11,6 +11,15 @@ export type PropId =
   | 'plant'
   | 'desk'
   | 'name'
+  | 'phone'
+
+/** What the room is actually made of, sampled by <XRay /> while it is on. */
+export type Stats = {
+  triangles: number
+  meshes: number
+  geometries: number
+  textures: number
+}
 
 type SceneState = {
   /** false = daylight, true = lamp-lit night. Driven by clicking the lamp. */
@@ -27,6 +36,27 @@ type SceneState = {
    */
   signOn: boolean
   toggleSign: () => void
+
+  /**
+   * Wireframe "how it's made" mode. Strips the room back to its construction
+   * and surfaces the renderer's own counters, so the making-of is shown rather
+   * than described.
+   */
+  xray: boolean
+  toggleXray: () => void
+
+  /**
+   * Guided mode. Floats a category label over every clickable prop at once, so
+   * the room can be read without hunting for the cursor change. Off by default:
+   * the labels answer "what can I click?" on request rather than pre-empting a
+   * question nobody asked.
+   */
+  help: boolean
+  toggleHelp: () => void
+
+  /** Renderer counters, only written while xray is on. */
+  stats: Stats
+  setStats: (s: Stats) => void
 
   /** Which prop the pointer is currently over — drives cursor + hover label. */
   hovered: PropId | null
@@ -62,6 +92,15 @@ export const useScene = create<SceneState>((set, get) => ({
   signOn: true,
   toggleSign: () => set({ signOn: !get().signOn }),
 
+  xray: false,
+  toggleXray: () => set({ xray: !get().xray }),
+
+  help: false,
+  toggleHelp: () => set({ help: !get().help }),
+
+  stats: { triangles: 0, meshes: 0, geometries: 0, textures: 0 },
+  setStats: (s) => set({ stats: s }),
+
   hovered: null,
   setHovered: (id) => set({ hovered: id }),
 
@@ -81,5 +120,7 @@ if (import.meta.env.DEV) {
   ;(window as unknown as { __scene: typeof useScene }).__scene = useScene
 }
 
-// Hover labels used to float over each prop; they were noisy, so the cursor is
-// now the only affordance. Interactive derives clickability from onActivate.
+// Hover labels used to float over each prop unprompted; they were noisy, so the
+// cursor is the only affordance by default. They now live behind `help`, which
+// shows them all at once and starts off. Interactive derives clickability from
+// onActivate, and which props get a label from src/data/help.ts.

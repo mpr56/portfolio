@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Panel } from '../Panel'
 
 export function About() {
@@ -26,14 +27,15 @@ export function About() {
         <div>
           <dt>Contact</dt>
           <dd>
-            <a href="mailto:manav.preet.contact@gmail.com">manav.preet.contact@gmail.com</a>
+            <Link to="/contact">Email, GitHub, LinkedIn & CV</Link>
           </dd>
         </div>
       </dl>
 
       <p className="hint">
         Everything on the desk does something. Click the lamp for the lights, the record player and
-        the guitars for sound, the monitor for work, and the cameras for film.
+        the guitars for sound, the monitor for work, the cameras for film, and the phone to get in
+        touch.
       </p>
     </Panel>
   )

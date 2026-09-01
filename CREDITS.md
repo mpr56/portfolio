@@ -1,6 +1,16 @@
 # Credits
 
-This file provides credit for the 3D models used in this website
+3D models used in the signature scene.
+
+### [2001 BMW M3 GTR](https://sketchfab.com/3d-models/2001-bmw-m3-gtr-6bb4d180cd0d454ba62fbfae24fc5155)
+- **Author:** Dave Love SketchFab (https://sketchfab.com/Tyler_Dave)
+- **License:** CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+- **File:** `car2.glb`
+
+### [2018 Mazda RX-7 FD3S "Fatal Stinger"](https://sketchfab.com/3d-models/2018-mazda-rx-7-fd3s-fatal-stinger-da181d6e901e459182bc7754925ed50f)
+- **Author:** SIU Car Garage (https://sketchfab.com/Game_mode)
+- **License:** CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+- **File:** `car3.glb`
 
 ### [Camcorder](https://sketchfab.com/3d-models/camcorder-c1099addc1184daf86f4d6eead4ef330)
 - **Author:** Elite Big Speakerman (https://sketchfab.com/EvesStudio2008)
@@ -12,8 +22,8 @@ This file provides credit for the 3D models used in this website
 - **License:** UNKNOWN — verify before publishing
 - **File:** `chair.glb`
 
-### [Ferrari f40](https://sketchfab.com/3d-models/ferrari-f40-52a66c41cfcd4f999fb1b1c49bf24d70)
-- **Author:** Black Snow (https://sketchfab.com/BlackSnow02)
+### [ferrari f40](https://sketchfab.com/3d-models/ferrari-f40-4fc7a4f193d74b4f940d3ecf19ba93db)
+- **Author:** amogusstrikesback2 (https://sketchfab.com/amogusstrikesback2)
 - **License:** CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 - **File:** `car.glb`
 
@@ -27,15 +37,11 @@ This file provides credit for the 3D models used in this website
 - **License:** CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 - **File:** `guitar.glb`
 
-### lamp
-- **Author:** unknown — verify before publishing
-- **License:** UNKNOWN — verify before publishing
-- **File:** `lamp.glb`
+### [iPhone 12 Pro](https://sketchfab.com/3d-models/iphone-12-pro-05dfc991665e45c68c8b7062136c0c6e)
+- **Author:** DatSketch (https://sketchfab.com/DatSketch)
+- **License:** CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+- **File:** `phone.glb`
 
-### monitor
-- **Author:** unknown — verify before publishing
-- **License:** UNKNOWN — verify before publishing
-- **File:** `monitor.glb`
 
 ### [MUSKONGE_N24T6N23S4002](https://sketchfab.com/3d-models/muskonge-n24t6n23s4002-a5811189a5a14c90aefe7e62116c5cfe)
 - **Author:** MUSKONGE (https://sketchfab.com/MOUSIOON)

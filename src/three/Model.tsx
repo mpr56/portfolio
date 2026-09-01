@@ -17,6 +17,7 @@ export type ModelName =
   | 'bass'
   | 'plant'
   | 'lamp'
+  | 'phone'
 
 const url = (name: ModelName) => `/models/${name}.glb`
 

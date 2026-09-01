@@ -8,6 +8,7 @@ import type { BloomEffect, VignetteEffect } from 'postprocessing'
 import { ThemeDriver, themeMix } from './theme'
 import { Rig } from './Rig'
 import { Lighting } from './Lighting'
+import { XRay } from './XRay'
 import { useScene } from '../store'
 import { PALETTE, SHOTS } from '../data/scene'
 
@@ -25,6 +26,7 @@ import { Guitars } from './props/Guitars'
 import { CarModel } from './props/CarModel'
 import { VhsShelf } from './props/VhsShelf'
 import { WallName } from './props/WallName'
+import { Phone } from './props/Phone'
 
 /**
  * Bloom and vignette, driven off the shared day→night mix in useFrame rather
@@ -108,6 +110,7 @@ export function Experience() {
       <ThemeDriver />
       <Rig />
       <Lighting />
+      <XRay />
 
       <Suspense fallback={null}>
         <Room />
@@ -121,6 +124,7 @@ export function Experience() {
         <CarModel />
         <VhsShelf />
         <WallName />
+        <Phone />
         <Preload all />
       </Suspense>
 

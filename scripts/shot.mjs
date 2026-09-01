@@ -2,7 +2,7 @@
  * Screenshots the running scene, so placement and lighting can be judged
  * instead of guessed.
  *
- *   node scripts/shot.mjs [url] [outfile] [--dark] [--route=/projects]
+ *   node scripts/shot.mjs [url] [outfile] [--dark] [--route=/projects] [--guide]
  *
  * Enters past the loading curtain, waits for the camera to settle, and reports
  * anything the page logged to the console on the way.
@@ -63,6 +63,19 @@ if (dark) {
   // Flip night via the dev store handle rather than hunting for the lamp in 3D.
   await page.evaluate(() => window.__scene?.setState({ dark: true }))
   await page.waitForTimeout(1600)
+}
+
+if (flags.includes('--xray')) {
+  await page.evaluate(() => window.__scene?.setState({ xray: true }))
+  // Long enough for the readout to take its first sample.
+  await page.waitForTimeout(900)
+}
+
+// Not --help, which every CLI already spells for something else.
+if (flags.includes('--guide')) {
+  await page.evaluate(() => window.__scene?.setState({ help: true }))
+  // Each label waits on its prop's bounding box, measured on the next frame.
+  await page.waitForTimeout(900)
 }
 
 // --focus=x,y,z[,dist] parks the camera on one prop, bypassing the route rig.

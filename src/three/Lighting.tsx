@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { intro, mixColor, mixNumber } from './theme'
-import { LAMP_HEAD, LAMP_LIGHT } from '../data/scene'
+import { LAMP_HEAD, LAMP_LIGHT, LAMP_TARGET } from '../data/scene'
 
 /**
  * Phones get a half-resolution shadow map for the lamp. Decided once at mount:
@@ -93,7 +93,7 @@ export function Lighting() {
       </directionalLight>
 
       {/* Emitted from the shade itself, aimed back down at the desk. */}
-      <object3D ref={lampTarget} position={[0.1, 0.74, -0.2]} />
+      <object3D ref={lampTarget} position={LAMP_TARGET} />
       <spotLight
         ref={lamp}
         position={LAMP_HEAD}

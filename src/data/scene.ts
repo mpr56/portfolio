@@ -60,6 +60,18 @@ export const LAYOUT = {
     position: [-0.85, SURFACE, 0.4] as Vec3,
     rotation: [0, Math.PI / 2 - 0.1, 0] as Vec3,
   },
+  /**
+   * Face-up on the return, in front of the monitor and clear of its footprint,
+   * roughly where a hand would leave it from the chair.
+   *
+   * The model stands upright with its origin at the base, so the −90° about X
+   * is what lays it down; the Z term is applied first in the model's own frame
+   * and so spins it in the desk plane once it is flat.
+   */
+  phone: {
+    position: [-0.48, SURFACE, 0.66] as Vec3,
+    rotation: [-Math.PI / 2, 0, 0.32] as Vec3,
+  },
   /** Long wing, left to right: cameras, car, record player. */
   vhs: { position: [-0.52, SURFACE, -0.34] as Vec3},
   /** Two die-casts side by side between the cameras and the record player. */
@@ -110,6 +122,13 @@ export const SHOTS: Record<string, Shot> = {
   // after the cameras and turntable swapped ends of the desk.
   '/videography': { position: [0.5, 1.35, 1.1], target: [-0.52, 0.88, -0.34], fov: 36 },
   '/about': { position: [2.85, 2.0, 3.25], target: [-0.2, 0.95, -0.1], fov: 33 },
+  // The only shot that looks down rather than across. A phone lying flat reads
+  // as a sliver from every eye-level angle the other shots use.
+  //
+  // The target sits deliberately off the phone, to its screen-right: the panel
+  // covers the right third of the viewport, so aiming straight at the subject
+  // parks it under the sheet. Everything else here is wide enough not to care.
+  '/contact': { position: [-0.08, 1.32, 1.02], target: [-0.37, 0.77, 0.54], fov: 32 },
 }
 
 /**
@@ -178,6 +197,12 @@ export const LAMP_HEAD: Vec3 = (() => {
   // Rotation about Y: x' = x·cosθ + z·sinθ, z' = −x·sinθ + z·cosθ, with z = 0.
   return [lx + ox * Math.cos(ry), oy, lz - ox * Math.sin(ry)]
 })()
+
+/**
+ * What the lamp is aimed at. Shared with <Lighting /> and <XRay /> so the
+ * spotlight and the cone that visualises it can never point different ways.
+ */
+export const LAMP_TARGET: Vec3 = [0.1, 0.74, -0.2]
 
 /** Warm pool of light the lamp throws across the desk at night. */
 export const LAMP_LIGHT = {

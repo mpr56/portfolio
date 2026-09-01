@@ -76,8 +76,124 @@ a {
 .chip--tl {
   left: 26px;
 }
+/* Second slot on the left: chip width plus a gap clear of .chip--tl. */
+.chip--tl2 {
+  left: 80px;
+}
+/* Third slot, same 54px step again. */
+.chip--tl3 {
+  left: 134px;
+}
 .chip--tr {
   right: 26px;
+}
+.chip.is-on {
+  background: rgba(127, 227, 212, 0.2);
+  border-color: rgba(127, 227, 212, 0.55);
+}
+
+/* The wireframe readout. Tucked under the chips rather than over the middle of
+   the frame, so the room it is describing stays unobstructed. */
+.xray {
+  position: absolute;
+  top: 84px;
+  left: 26px;
+  width: 252px;
+  padding: 14px 16px 15px;
+  border-radius: 12px;
+  border: 1px solid var(--chip-line);
+  background: rgba(10, 16, 22, 0.74);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  color: var(--ink);
+  pointer-events: auto;
+}
+.xray__title {
+  margin: 0 0 10px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7fe3d4;
+}
+.xray__stats {
+  margin: 0;
+  display: grid;
+  gap: 5px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+.xray__stats > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+}
+.xray__stats dt {
+  opacity: 0.6;
+}
+.xray__stats dd {
+  margin: 0;
+  /* Tabular figures, or the counts jitter sideways as they update. */
+  font-variant-numeric: tabular-nums;
+}
+.xray__note {
+  margin: 12px 0 0;
+  font-size: 11.5px;
+  line-height: 1.55;
+  opacity: 0.66;
+}
+.xray__link {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 11.5px;
+  color: #7fe3d4;
+  text-decoration: none;
+}
+.xray__link:hover {
+  text-decoration: underline;
+}
+
+/* Contact rows. Every one of these leaves the site, so they read as a list of
+   destinations rather than as the panel's own navigation. */
+.contactlist {
+  list-style: none;
+  margin: 26px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1px;
+}
+.contactlist a {
+  display: grid;
+  /* The handle takes the slack so it is the part that truncates — the label
+     and the arrow must never be the things that get clipped. */
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 4px;
+  color: inherit;
+  text-decoration: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  transition: padding 0.2s ease, color 0.2s ease;
+}
+.contactlist li:last-child a {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.contactlist a:hover {
+  padding-left: 10px;
+  color: #8fe4d6;
+}
+.contactlist__label {
+  font-size: 15px;
+  font-weight: 600;
+}
+.contactlist__handle {
+  font-size: 13px;
+  opacity: 0.56;
+  text-align: right;
+  /* Grid items default to min-content, which defeats the ellipsis. */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .headline {
@@ -156,18 +272,45 @@ a {
   color: inherit;
 }
 
-/* Floating label above a hovered prop, rendered by drei's <Html>. */
+/* Guided-mode label, floated over a clickable prop by drei's <Html>. Two tiers:
+   the category tag, then what clicking the prop actually does. Both this and
+   drei's own wrapper stay click-through, so the label never steals the click
+   from the prop it is pointing at. */
+.hotspot-anchor {
+  pointer-events: none;
+}
 .hotspot {
-  padding: 5px 11px;
-  border-radius: 999px;
+  display: grid;
+  gap: 1px;
+  justify-items: center;
+  padding: 5px 11px 6px;
+  border-radius: 10px;
   background: rgba(12, 16, 22, 0.82);
   border: 1px solid rgba(255, 255, 255, 0.16);
   color: #f2f6fc;
-  font-size: 12px;
-  letter-spacing: 0.02em;
   white-space: nowrap;
   backdrop-filter: blur(6px);
-  transform: translateY(-6px);
+  -webkit-backdrop-filter: blur(6px);
+  pointer-events: none;
+  user-select: none;
+  animation: hotspot-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+/* Same teal as .chip.is-on, so the lit help chip and its labels read as one. */
+.hotspot__cat {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7fe3d4;
+}
+.hotspot__act {
+  font-size: 12px;
+  letter-spacing: 0.01em;
+}
+@keyframes hotspot-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
 }
 
 /* ---------------------------------------------------------------- panel */
@@ -754,8 +897,32 @@ a {
   .chip--tl {
     left: 16px;
   }
+  .chip--tl2 {
+    left: 68px;
+  }
+  .chip--tl3 {
+    left: 120px;
+  }
   .chip--tr {
     right: 16px;
+  }
+  /* Eight labels at desktop size collide at the narrow-screen framing. */
+  .hotspot {
+    padding: 3px 8px 4px;
+    border-radius: 8px;
+  }
+  .hotspot__cat {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+  }
+  .hotspot__act {
+    font-size: 10px;
+  }
+  .xray {
+    top: 70px;
+    left: 16px;
+    right: 16px;
+    width: auto;
   }
   .headline {
     top: 78px;

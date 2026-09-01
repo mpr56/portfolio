@@ -19,12 +19,23 @@ import { useScreenTexture } from '../../hooks/useScreenTexture'
  * hair proud of the glass to avoid z-fighting.
  */
 const SCREEN = {
-  width: 1.1609,
-  height: 0.3562,
-  y: 0.3155,
-  z: 0.0792,
-  tilt: -0.125,
+  width: 0.898,
+  height: 0.274,
+  y: 0.2355,
+  z: 0.0592,
+  tilt: -0.185,
 }
+
+/**
+ * How much bigger than life the ultrawide sits.
+ *
+ * On the frame group rather than on <Model>, which matters: the screen plane
+ * below is the Model's *sibling*, so scaling the model alone leaves the panel
+ * at its old size and every constant above has to be re-multiplied by hand.
+ * Scaling the parent moves both together, and keeps SCREEN in the same units
+ * `node scripts/face.mjs monitorFrame` reports.
+ */
+const SCALE = 1.3
 
 /** Canvas aspect must match width/height above, or the type skews. */
 export const SCREEN_ASPECT = SCREEN.width / SCREEN.height
@@ -56,8 +67,9 @@ export function Monitor() {
         name="monitorFrame"
         position={LAYOUT.monitor.position}
         rotation={LAYOUT.monitor.rotation}
+        scale={SCALE}
       >
-        <Model name="monitor" scale={1.3}/>
+        <Model name="monitor" />
         {/*
           Matched to the panel measured by `node scripts/face.mjs monitor`: the
           glass is not vertical, it leans back about 11°, so a plane at a fixed

@@ -7,6 +7,7 @@ import { Projects } from './ui/pages/Projects'
 import { ProjectPage } from './ui/pages/ProjectPage'
 import { Videography } from './ui/pages/Videography'
 import { About } from './ui/pages/About'
+import { Contact } from './ui/pages/Contact'
 
 /**
  * The canvas lives outside <Routes> on purpose: routes swap the DOM panel over
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/projects/:slug" element={<ProjectPage />} />
         <Route path="/videography" element={<Videography />} />
         <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="*" element={null} />
       </Routes>
       <Intro />

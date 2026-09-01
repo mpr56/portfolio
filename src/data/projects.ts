@@ -48,7 +48,24 @@ export const PROJECTS: Project[] = [
     links: [{ label: 'Visit site', href: 'https://receiptify-store.vercel.app' }],
     demo: { src: 'https://receiptify-demo.vercel.app', title: 'Receiptify Demo', zoom: 1 },
   },
-    {
+  {
+    slug: 'this-site',
+    title: 'This Site',
+    role: 'Design + engineering + asset pipeline',
+    year: '2026',
+    blurb: 'The room you are sitting in — a real-time 3D portfolio where every object on the desk is a way into the work.',
+    summary:
+      'A single WebGL scene that never tears down. The canvas lives outside the router, so opening a page swaps the panel over the top and eases the camera to a new framing rather than unmounting the room — that continuity is the whole format. Every object on the desk is a door: the monitor opens the work, the cameras open the film, the lamp turns the room to night. The scene was the easy half. The interesting half was making it load fast enough to be worth shipping.',
+    stack: ['React', 'TypeScript', 'three.js', 'React Three Fiber', 'Vite', 'Zustand'],
+    highlights: [
+      'Built an asset pipeline that takes 174MB of raw downloads to roughly 4MB shipped — texture resizing and WebP encoding, geometry simplification, and Draco compression.',
+      'Converted models authored against the retired KHR_materials_pbrSpecularGlossiness extension, which three.js no longer supports and which render untextured white until they are migrated.',
+      'Baked real-world scale and a floor-centred origin into every asset offline, so the scene code carries no per-model magic numbers — props sit at their layout position and that is all.',
+      'Drove the day/night system off a single shared 0..1 mix that every material samples inside the render loop instead of React state, so toggling the lamp never re-renders the scene graph.',
+      'Wrote the tooling around it: measuring world bounds of props in the running scene, screenshotting from arbitrary angles, and regenerating model credits from embedded licence metadata.',
+    ],
+  },
+  {
     slug: 'project-three',
     title: 'No Trust Media',
     role: 'Under development',
