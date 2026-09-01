@@ -19,11 +19,11 @@ import { useScreenTexture } from '../../hooks/useScreenTexture'
  * hair proud of the glass to avoid z-fighting.
  */
 const SCREEN = {
-  width: 0.898,
-  height: 0.274,
-  y: 0.2355,
-  z: 0.0592,
-  tilt: -0.185,
+  width: 1.1609,
+  height: 0.3562,
+  y: 0.3155,
+  z: 0.0792,
+  tilt: -0.125,
 }
 
 /** Canvas aspect must match width/height above, or the type skews. */
@@ -57,7 +57,7 @@ export function Monitor() {
         position={LAYOUT.monitor.position}
         rotation={LAYOUT.monitor.rotation}
       >
-        <Model name="monitor" />
+        <Model name="monitor" scale={1.3}/>
         {/*
           Matched to the panel measured by `node scripts/face.mjs monitor`: the
           glass is not vertical, it leans back about 11°, so a plane at a fixed

@@ -25,11 +25,11 @@ export const PROJECTS: Project[] = [
     year: '2025',
     blurb: 'A dashboard built for property managers to track existing properties with every aspect of the property management lifecycle.',
     summary:
-      'A dashboard built for poperty managers to track exisitng properites with every aspect of the property management lifecycle. Syncs council rates, water bills, termite inpsections, periodic inspections and maintenance tasks with real time tracking and notifications so you never miss a thing. Built with React, Next.js and TypeScript. This a demo version of the real thing due to the sensitivity of the data, everything else is identical.',
+      'A dashboard built for property managers to track existing properties with every aspect of the property management lifecycle. Syncs council rates, water bills, termite inspections, periodic inspections and maintenance tasks with real time tracking and notifications so you never miss a thing. Built with React, Next.js and TypeScript. This is a demo version of the real thing due to the sensitivity of the data, everything else is identical.',
     stack: ['React', 'TypeScript', 'Next.js', 'Postgres'],
     highlights: [
       'Built a comprehensive and user-friendly property management dashboard.',
-      'Implemented time sensitive notications for invoices and maintenance tasks.',
+      'Implemented time sensitive notifications for invoices and maintenance tasks.',
       'Integrated with multiple data sources for seamless operation.',
       'Used postgres to store and manage data efficiently, ensuring scalability and reliability.',
     ],
@@ -42,11 +42,11 @@ export const PROJECTS: Project[] = [
     role: 'Frontend + Backend + AI integration',
     year: '2026',
     blurb: 'A simple app to scan and manage your receipts with AI ocr integration.',
-    summary: `I got sick of loosing all of my receipts, so I built myself an app instead. This app combines the power of AI and OCR technology to provide a seamless experience for managing receipts. Users can easily scan, store, and categorize their receipts, making expense tracking effortless. This app is currently in demo phase and the database has not been set up yet.`,
+    summary: `I got sick of losing all of my receipts, so I built myself an app instead. This app combines the power of AI and OCR technology to provide a seamless experience for managing receipts. Users can easily scan, store, and categorise their receipts, making expense tracking effortless. This app is currently in demo phase and the database has not been set up yet.`,
     stack: ['Next.js', 'TypeScript', 'AI Integration', 'Postgres'],
-    highlights: ['Using AI-powered OCR for accurate receipt scanning', 'Ensuring data security and seperation for user data'],
+    highlights: ['Using AI-powered OCR for accurate receipt scanning', 'Ensuring data security and separation for user data'],
     links: [{ label: 'Visit site', href: 'https://receiptify-store.vercel.app' }],
-    demo: { src: 'https://receiptify-store.vercel.app', title: 'Receiptify Demo', zoom: 1 },
+    demo: { src: 'https://receiptify-demo.vercel.app', title: 'Receiptify Demo', zoom: 1 },
   },
     {
     slug: 'project-three',
@@ -60,7 +60,7 @@ export const PROJECTS: Project[] = [
     demo: { src: 'https://notrustmedia.com', title: 'No Trust Media Demo', zoom: 1 },
   },
   {
-    slug: 'project-three',
+    slug: 'project-four',
     title: 'Plenty more on the way',
     role: 'Under development',
     year: '2026',

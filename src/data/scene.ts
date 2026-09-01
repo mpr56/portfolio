@@ -57,11 +57,11 @@ export const LAYOUT = {
   desk: { position: [0, 0, 0] as Vec3, rotation: [0, 0, 0] as Vec3 },
   /** On the return, against the left wall, turned to face across the desk. */
   monitor: {
-    position: [-0.93, SURFACE, 0.4] as Vec3,
-    rotation: [0, Math.PI / 2 - 0.22, 0] as Vec3,
+    position: [-0.85, SURFACE, 0.4] as Vec3,
+    rotation: [0, Math.PI / 2 - 0.1, 0] as Vec3,
   },
   /** Long wing, left to right: cameras, car, record player. */
-  vhs: { position: [-0.63, SURFACE, -0.34] as Vec3 },
+  vhs: { position: [-0.52, SURFACE, -0.34] as Vec3},
   /** Two die-casts side by side between the cameras and the record player. */
   car: { position: [-0.02, SURFACE, -0.28] as Vec3 },
   car2: { position: [0.32, SURFACE, -0.36] as Vec3 },

@@ -46,7 +46,7 @@ export function Hud() {
           <br />
           Learning everything along the way.
         </h1>
-        <p>Full time Software developer, full time UTS student & inspiring videographer</p>
+        <p>Full time Software developer, full time UTS student & aspiring videographer</p>
       </header>
 
       <Link className="sidetab" to="/about">
