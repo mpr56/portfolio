@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useScene } from '../store'
+import { Onboarding } from './Onboarding'
 import { SoundIcon } from './SoundIcon'
 
 /** Persistent chrome: sound, menu, headline, footer, and the side tab. */
@@ -74,7 +75,8 @@ export function Hud() {
             </div>
           </dl>
           <p className="xray__note">
-            Every model here was rebuilt offline — 174MB of raw downloads to roughly 4MB shipped.
+            Every model here was rebuilt offline, taking 174MB of raw downloads down to roughly
+            4MB shipped.
             The cone is the lamp&rsquo;s spotlight, drawn from the same numbers that aim it.
           </p>
           <Link className="xray__link" to="/projects/this-site">
@@ -120,6 +122,8 @@ export function Hud() {
       <footer className="footer">
         © {new Date().getFullYear()} Manav. All rights reserved. <Link to="/about">About</Link>
       </footer>
+
+      <Onboarding />
     </div>
   )
 }

@@ -152,6 +152,63 @@ a {
   text-decoration: underline;
 }
 
+/* First-visit tip. Bottom-right is the one corner nothing else claims: xray
+   owns top-left, the headline top-center, the sidetab the right edge's
+   middle, the footer bottom-center. */
+.onboarding {
+  position: absolute;
+  right: 26px;
+  bottom: 26px;
+  width: 300px;
+  padding: 16px 18px 17px;
+  border-radius: 12px;
+  border: 1px solid var(--chip-line);
+  background: rgba(10, 16, 22, 0.82);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  color: var(--ink);
+  pointer-events: auto;
+  animation: onboarding-in 0.5s ease;
+}
+.onboarding__title {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7fe3d4;
+}
+.onboarding__body {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  opacity: 0.85;
+}
+.onboarding__dismiss {
+  appearance: none;
+  display: block;
+  margin-top: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.onboarding__dismiss:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+@keyframes onboarding-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
 /* Contact rows. Every one of these leaves the site, so they read as a list of
    destinations rather than as the panel's own navigation. */
 .contactlist {
@@ -922,6 +979,12 @@ a {
     top: 70px;
     left: 16px;
     right: 16px;
+    width: auto;
+  }
+  .onboarding {
+    right: 16px;
+    bottom: 96px;
+    left: 16px;
     width: auto;
   }
   .headline {
