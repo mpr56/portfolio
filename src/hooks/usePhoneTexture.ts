@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { CV, LINKS } from '../data/links'
+import { Resume, LINKS } from '../data/links'
 
 /**
  * Paints the phone's lock screen into a canvas texture.
@@ -93,7 +93,7 @@ export function usePhoneTexture(aspect: number) {
 
     // Notification stack: the three links plus the CV, as things that arrived
     // on the phone rather than as a nav bar pretending to be one.
-    const rows = [...LINKS, CV]
+    const rows = [...LINKS, Resume]
     const pad = 34
     const cardH = 118
     const gap = 14

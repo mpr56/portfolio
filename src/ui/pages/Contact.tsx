@@ -1,5 +1,5 @@
 import { Panel } from '../Panel'
-import { CV, LINKS } from '../../data/links'
+import { Resume, LINKS } from '../../data/links'
 
 /**
  * Where the phone leads. Everything here leaves the site, so each row is a
@@ -14,14 +14,14 @@ export function Contact() {
       </p>
 
       <ul className="contactlist">
-        {[...LINKS, CV].map((link) => {
+        {[...LINKS, Resume].map((link) => {
           const external = link.href.startsWith('http')
           return (
             <li key={link.href}>
               <a
                 href={link.href}
                 {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
-                {...(link === CV ? { download: '' } : {})}
+                {...(link === Resume ? { download: '' } : {})}
               >
                 <span className="contactlist__label">{link.label}</span>
                 <span className="contactlist__handle">{link.handle}</span>

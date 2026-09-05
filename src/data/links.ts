@@ -14,8 +14,8 @@ export type SocialLink = {
 export const LINKS: SocialLink[] = [
   {
     label: 'GitHub',
-    handle: '@manavpreet',
-    href: 'https://github.com/manavpreet',
+    handle: '@mpr56',
+    href: 'https://github.com/mpr56',
   },
   {
     label: 'LinkedIn',
@@ -30,8 +30,8 @@ export const LINKS: SocialLink[] = [
 ]
 
 /** Served straight out of public/. */
-export const CV = {
-  label: 'Download CV',
+export const Resume = {
+  label: 'Download Resume',
   handle: 'PDF',
-  href: '/manav-cv.pdf',
+  href: '/2026_resume.pdf',
 }
