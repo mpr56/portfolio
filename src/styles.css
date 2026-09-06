@@ -990,6 +990,12 @@ a {
   .headline {
     top: 78px;
   }
+  /* Full-width here (see .xray above), so it now sits under the same band
+     as the headline — the two together are unreadable, same as help mode. */
+  .hud.is-xray .headline {
+    opacity: 0;
+    pointer-events: none;
+  }
   .panel__sheet {
     padding: 88px 24px 60px;
     width: 100%;
