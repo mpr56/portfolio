@@ -18,7 +18,7 @@ export function Hud() {
   const home = pathname === '/'
 
   return (
-    <div className={`hud ${dark ? 'is-dark' : ''} ${entered ? 'is-entered' : ''}`}>
+    <div className={`hud ${dark ? 'is-dark' : ''} ${entered ? 'is-entered' : ''} ${xray ? 'is-xray' : ''}`}>
       <button
         className="chip chip--tl"
         onClick={toggleMuted}
