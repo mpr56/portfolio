@@ -3,13 +3,17 @@ import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { intro, mixColor, mixNumber } from './theme'
 import { LAMP_HEAD, LAMP_LIGHT, LAMP_TARGET } from '../data/scene'
+import { isMoving, useQuality } from '../quality'
 
 /**
- * Phones get a half-resolution shadow map for the lamp. Decided once at mount:
- * changing `mapSize` later forces the map to be reallocated, and at phone size
- * nobody can tell 512 from 1024 in a soft pool of light.
+ * How often the key light's shadow map is redrawn while the room is still.
+ *
+ * Plant.tsx sways 0.006 rad — a third of a degree — on a sine that never
+ * stops, and that is the only thing moving in an idle scene. A soft shadow
+ * drifting by that much is invisible at five redraws a second, and the map was
+ * costing a full 300k-triangle depth pass on every one of the other 115.
  */
-const LAMP_SHADOW = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches ? 512 : 1024
+const KEY_SHADOW_HZ = 5
 
 /**
  * All scene lighting, including the warm pool the lamp throws at night.
@@ -18,23 +22,32 @@ const LAMP_SHADOW = typeof window !== 'undefined' && window.matchMedia?.('(point
  */
 export function Lighting() {
   const scene = useThree((s) => s.scene)
+  const fixed = useQuality((s) => s.fixed)
   const ambient = useRef<THREE.HemisphereLight>(null)
   const key = useRef<THREE.DirectionalLight>(null)
   const lamp = useRef<THREE.SpotLight>(null)
   const lampTarget = useRef<THREE.Object3D>(null)
+  const nextKeyShadow = useRef(0)
 
   useLayoutEffect(() => {
-    // Draw the lamp's shadow map once at startup, while it is still dark.
+    // Draw both shadow maps once at startup, while it is still dark.
     //
     // The map has to exist before anything samples it: a shadow-casting light
     // whose map was never rendered leaves a plain colour texture bound to a
     // sampler2DShadow, which the driver rejects outright
     // (GL_INVALID_OPERATION) and the frame is lost. autoUpdate below then
-    // stops it being redrawn every frame while the lamp is off.
+    // stops either being redrawn every frame.
     if (lamp.current) lamp.current.shadow.needsUpdate = true
+    if (key.current) {
+      // The key light gets the treatment the lamp already had and
+      // ContactShadows already had (frames={1}, Room.tsx:67). It was the one
+      // light in the scene still paying for a full redraw every frame.
+      key.current.shadow.autoUpdate = false
+      key.current.shadow.needsUpdate = true
+    }
   }, [])
 
-  useFrame(() => {
+  useFrame((state) => {
     // intro.lights ramps the room up on load. The lamp is deliberately left out
     // of it — that one is the visitor's switch, not part of the opening.
     const up = intro.lights
@@ -46,6 +59,15 @@ export function Lighting() {
     if (key.current) {
       mixColor(key.current.color, 'keyColor')
       key.current.intensity = mixNumber('keyIntensity') * up
+
+      // Only geometry moving changes a shadow map — it is a depth pass, so the
+      // ramp above and the day/night dissolve do not dirty it. three clears
+      // needsUpdate itself once the map has been drawn.
+      const now = state.clock.elapsedTime
+      if (isMoving() || now >= nextKeyShadow.current) {
+        key.current.shadow.needsUpdate = true
+        nextKeyShadow.current = now + 1 / KEY_SHADOW_HZ
+      }
     }
     if (lamp.current) {
       lamp.current.intensity = mixNumber('lampIntensity')
@@ -85,7 +107,7 @@ export function Lighting() {
         // light from the left leaves both of them turned away from it.
         position={[3.9, 6.5, 3.4]}
         castShadow
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[fixed.keyShadowMap, fixed.keyShadowMap]}
         shadow-bias={-0.0004}
         shadow-normalBias={0.02}
       >
@@ -104,7 +126,7 @@ export function Lighting() {
         decay={LAMP_LIGHT.decay}
         intensity={0}
         castShadow
-        shadow-mapSize={[LAMP_SHADOW, LAMP_SHADOW]}
+        shadow-mapSize={[fixed.lampShadowMap, fixed.lampShadowMap]}
         shadow-bias={-0.0006}
         shadow-normalBias={0.02}
       />
