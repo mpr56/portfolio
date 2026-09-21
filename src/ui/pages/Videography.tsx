@@ -26,7 +26,12 @@ export function Videography() {
         {VIDEOS.map((f) => (
           <figure className="film" key={f.title}>
             <div className="film__frame">
-              <video controls loop muted={muted} playsInline preload="auto" poster={f.poster}>
+              {/* metadata, not auto: preload="auto" pulled every file in this
+                  grid in full — tens of megabytes — and handed each one to the
+                  video decoder, on a page the visitor may only be passing
+                  through. The poster is what they see until they press play,
+                  and metadata is all that is needed to size the element. */}
+              <video controls loop muted={muted} playsInline preload="metadata" poster={f.poster}>
                 <source src={f.src} type="video/mp4" />
                 Your browser does not support HTML video.
               </video>

@@ -562,6 +562,18 @@ a {
   border-left: 1px solid rgba(255, 255, 255, 0.1);
   animation: sheet-in 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+/*
+ * A backdrop blur is recomputed by the compositor every time what is behind it
+ * changes, and what is behind this one is the canvas. At 22px over a
+ * full-height sheet that is a real cost on a phone, on the routes where people
+ * sit still and read. The tier comes from src/quality.ts, which writes it to
+ * <html> at boot.
+ */
+:root[data-tier='low'] .panel__sheet {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
 @keyframes sheet-in {
   from {
     transform: translateX(40px);
