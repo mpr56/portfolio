@@ -3,5 +3,6 @@ TODO
 dist
 tsconfig.tsbuildinfo
 shots
+perf
 
 graphify-out
