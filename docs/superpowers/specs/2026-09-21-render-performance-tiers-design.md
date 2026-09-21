@@ -74,6 +74,18 @@ from a ~770k-triangle source. It is alpha-mapped foliage, which decimates badly.
 Further decimation is not available as a lever; excluding it from the shadow
 passes is.
 
+**8. The bloom's resolution lever is the luminance pass, not `resolutionScale`.**
+Found while writing the plan, against the installed `postprocessing`. The
+`<Bloom resolutionScale>` prop sets `BloomEffect.resolution`, and under
+`mipmapBlur` — which this scene uses (`Experience.tsx:60`) — `setSize` hands the
+*full* size to both `luminancePass` and `mipmapBlurPass` and never reads it. The
+constructor docs mark it `@deprecated. Use mipmapBlur instead.` The working
+lever is `BloomEffect.luminancePass.resolution.scale`: a live setter on the one
+full-resolution pass in the bloom, whose output feeds the mipmap chain. Because
+that pass runs at scale 1 today, "unchanged" is `1.0`, which is why the tier
+table below reads 1.0 / 0.75 / 0.5 rather than a half at every tier — high tier
+keeps today's bloom exactly.
+
 ## Design
 
 ### Quality profile, split by mutability
@@ -95,7 +107,7 @@ type StaticQuality = {
 /** Safe to change at any time: no shader variants, no reallocation. */
 type DynamicQuality = {
   dpr: number
-  bloomScale: number
+  luminanceScale: number  // BloomEffect.luminancePass.resolution.scale
   idleFps: number
   activeFps: number
   heavyShadowCasters: boolean  // plant, bass, sonycam in the shadow passes
@@ -139,6 +151,13 @@ holds a `requestAnimationFrame` loop and calls `advance(t)` on a budget.
 `advance` is on the R3F root store — `useThree((s) => s.advance)`, typed at
 `@react-three/fiber/dist/declarations/src/core/store.d.ts:112`.
 
+**`advance(t)` takes seconds.** Under `frameloop="never"` R3F ignores its own
+clock and computes `delta = t - clock.elapsedTime`, then assigns
+`clock.elapsedTime = t`. Passing `performance.now()` would run `Plant.tsx:13`'s
+sway 1000× fast and snap every `MathUtils.damp` in the codebase on the first
+frame. The driver passes seconds elapsed since the driver itself started, which
+also keeps the first frame's delta near zero.
+
 Budget:
 
 | State | Target |
@@ -159,7 +178,7 @@ Pointer events are DOM-driven and continue to work under `frameloop="never"`.
 | DPR ceiling | 1.5 | 1.25 | 1.0 |
 | multisampling | 2 | 0 | 0 |
 | SMAA | – | yes | no |
-| bloom scale | 0.5 | 0.5 | 0.35 |
+| bloom luminance scale | 1.0 | 0.75 | 0.5 |
 | key shadow map | 2048 | 1024 | 1024 |
 | lamp shadow map | 1024 | 512 | 512 |
 | sign lamps | 3 | 3 | 1 |
@@ -223,8 +242,11 @@ change at runtime (constraint 1 does not apply).
 | File | Change |
 |---|---|
 | `src/quality.ts` | new — profiles, boot heuristic, `useQuality` store |
+| `src/quality.test.ts` | new — boot heuristic tests (adds `vitest` to devDependencies) |
+| `src/three/frameBudget.ts` | new — frame-cost window and demotion rule, plus its test |
+| `src/three/Model.tsx` | optional `castShadow` prop — `useModel` sets it on every clone, so there is nowhere else to override it |
 | `src/three/FrameDriver.tsx` | new — rAF budget loop, `advance()`, cost measurement, ratchet |
-| `src/three/Experience.tsx` | `frameloop="never"`, drop `antialias`, drop `PerformanceMonitor`/`AdaptiveDpr`, tier-driven `dpr` + `multisampling` + bloom scale, mount `FrameDriver` |
+| `src/three/Experience.tsx` | `frameloop="never"`, drop `antialias`, drop `PerformanceMonitor`/`AdaptiveDpr`, tier-driven `dpr` + `multisampling` + bloom luminance scale, mount `FrameDriver` |
 | `src/three/Lighting.tsx` | key shadow refresh budget; tier-driven map sizes |
 | `src/three/props/WallName.tsx` | `signLamps` from the static profile |
 | `src/three/props/Plant.tsx` | `castShadow` from `heavyShadowCasters` |
