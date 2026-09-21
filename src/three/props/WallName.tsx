@@ -7,6 +7,7 @@ import { LAMP_LIGHT, LAYOUT } from '../../data/scene'
 import { themeMix } from '../theme'
 import { useScene } from '../../store'
 import { Interactive } from '../Interactive'
+import { useQuality } from '../../quality'
 
 /**
  * Vendored from three's own examples (MIT) rather than pulled from a CDN, so
@@ -25,13 +26,19 @@ const RIM = 0.0035
 /**
  * How many lamps sit in the cavity behind the letters.
  *
- * One will not do it. The cavity is 8mm deep and the word is nearly 800mm
- * wide, so a single lamp is 100× closer to the wall directly behind it than to
- * the ends of the phrase — it burns a hotspot behind the middle and leaves the
- * M and the t unlit. A row of them washes the whole word evenly, the way the
- * strip inside a real channel letter does.
+ * One will not do it, which is why the count is three wherever there is room
+ * for it. The cavity is 8mm deep and the word is nearly 800mm wide, so a
+ * single lamp is 100× closer to the wall directly behind it than to the ends
+ * of the phrase — it burns a hotspot behind the middle and leaves the M and
+ * the t unlit. A row of them washes the whole word evenly, the way the strip
+ * inside a real channel letter does.
+ *
+ * Low tier takes the hotspot. Three point lights are three more sets of
+ * fragment-shader work on every MeshStandardMaterial in the room, and on a
+ * phone that costs more than an even wash is worth. The count comes from the
+ * frozen half of the profile and never moves: changing how many lights a
+ * scene has makes three recompile every material in it.
  */
-const WASH_LAMPS = 3
 /** Fraction of the word's width the outer two lamps sit at. */
 const WASH_SPREAD = 0.72
 
@@ -118,6 +125,7 @@ export function WallName() {
   const haloMesh = useRef<THREE.Mesh>(null)
   const faceMesh = useRef<THREE.Mesh>(null)
   const toggleSign = useScene((s) => s.toggleSign)
+  const lamps = useQuality((s) => s.fixed.signLamps)
 
   /** Eased 0..1 switch state, so the sign fades rather than cuts. */
   const lit = useRef(1)
@@ -141,9 +149,12 @@ export function WallName() {
     const width = faces.boundingBox ? faces.boundingBox.max.x - faces.boundingBox.min.x : 0
     wash.current.forEach((light, i) => {
       if (!light) return
-      light.position.x = (i / (WASH_LAMPS - 1) - 0.5) * width * WASH_SPREAD
+      // The single-lamp case is not a degenerate spacing, it is the centre:
+      // i / (lamps - 1) divides by zero at one lamp, and a NaN on a light's
+      // position takes the sign out entirely.
+      light.position.x = lamps > 1 ? (i / (lamps - 1) - 0.5) * width * WASH_SPREAD : 0
     })
-  }, [])
+  }, [lamps])
 
   useFrame((_, dt) => {
     // Restrained by day, full halo once the room goes dark. intro.lights ramps
@@ -162,7 +173,9 @@ export function WallName() {
     if (halo.current) halo.current.emissiveIntensity = (1.3 + night * 2.2) * on
     // Split between the lamps so the row is no brighter overall than the single
     // one it replaced — this is about spreading the light, not adding more.
-    const perLamp = ((0.3 + night * 0.8) / WASH_LAMPS) * on
+    // Dividing by the live count is what keeps the sign the same brightness at
+    // one lamp as at three, rather than a third as bright.
+    const perLamp = ((0.3 + night * 0.8) / lamps) * on
     for (const light of wash.current) if (light) light.intensity = perLamp
   })
 
@@ -218,7 +231,7 @@ export function WallName() {
                They are declared statically rather than added when the sign
                lights up — changing how many lights a scene has forces three to
                recompile every material in it. */}
-        {Array.from({ length: WASH_LAMPS }, (_, i) => (
+        {Array.from({ length: lamps }, (_, i) => (
           <pointLight
             key={i}
             ref={(l) => {
