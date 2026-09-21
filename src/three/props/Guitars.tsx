@@ -5,6 +5,7 @@ import { LAYOUT } from '../../data/scene'
 import { Interactive } from '../Interactive'
 import { useAudio } from '../../hooks/useAudio'
 import { Model, type ModelName } from '../Model'
+import { useQuality } from '../../quality'
 
 /** Model lengths in metres, from `npm run inspect` on the optimised files. */
 const GUITAR_LEN = 1.02
@@ -40,6 +41,8 @@ type HungProps = {
   scale?: number
   /** The bass ships upright; the guitars ship lying flat. */
   upright?: boolean
+  /** Whether this instrument takes part in the shadow passes. */
+  castShadow?: boolean
 }
 
 /**
@@ -55,7 +58,7 @@ type HungProps = {
  * Origins differ too, which is why `bottom` exists rather than a raw y: the
  * flat guitars carry a centred origin, the upright bass a floor origin.
  */
-function Hung({ model, z, bottom, scale = 1, upright = false }: HungProps) {
+function Hung({ model, z, bottom, scale = 1, upright = false, castShadow = true }: HungProps) {
   const length = (upright ? BASS_LEN : GUITAR_LEN) * scale
   const top = bottom + length
   // Centred origin sits half a length up; floor origin sits at the bottom.
@@ -71,11 +74,11 @@ function Hung({ model, z, bottom, scale = 1, upright = false }: HungProps) {
       <group position={[0.075, originY, 0]}>
         {upright ? (
           <group rotation={[0, Math.PI / 2, 0]}>
-            <Model name={model} scale={scale} />
+            <Model name={model} scale={scale} castShadow={castShadow} />
           </group>
         ) : (
           <group rotation={[0, 0, -Math.PI / 2]}>
-            <Model name={model} scale={scale} />
+            <Model name={model} scale={scale} castShadow={castShadow} />
           </group>
         )}
       </group>
@@ -86,6 +89,7 @@ function Hung({ model, z, bottom, scale = 1, upright = false }: HungProps) {
 /** The instrument wall — a StingRay bass alongside an Ibanez JEM. */
 export function Guitars() {
   const { isPlaying, toggle } = useAudio('guitars', '/audio/guitarRiff.mp3', { volume: 0.55 })
+  const heavy = useQuality((s) => s.dynamic.heavyShadowCasters)
   const group = useRef<THREE.Group>(null)
   const t = useRef(0)
 
@@ -103,7 +107,10 @@ export function Guitars() {
       <group ref={group} position={LAYOUT.guitars.position} rotation={LAYOUT.guitars.rotation}>
         {/* `z` runs along the wall; with the group's quarter turn that maps to
             world −X, so the bass sits to the right of the guitar. */}
-        <Hung model="bass" z={-0.38} bottom={0.92} upright />
+        {/* 40k triangles on a wall, where its own shadow falls on the wall
+            directly behind it and reads as almost nothing. The guitar is half
+            the size and stays. */}
+        <Hung model="bass" z={-0.38} bottom={0.92} upright castShadow={heavy} />
         <Hung model="guitar" z={0.3} bottom={0.99} />
       </group>
     </Interactive>

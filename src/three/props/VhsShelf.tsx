@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { LAYOUT } from '../../data/scene'
 import { Interactive } from '../Interactive'
 import { Model } from '../Model'
+import { useQuality } from '../../quality'
 
 const TAPE_H = 0.028
 const SPINES = ['#7d2f2f', '#2f4a7d', '#2f7d5c']
@@ -15,6 +16,9 @@ const SPINES = ['#7d2f2f', '#2f4a7d', '#2f7d5c']
  */
 export function VhsShelf() {
   const navigate = useNavigate()
+  // 45k triangles sitting on a shelf in a corner, where ContactShadows and the
+  // shelf itself do the grounding.
+  const heavy = useQuality((s) => s.dynamic.heavyShadowCasters)
 
   return (
     <Interactive id="vhs" onActivate={() => navigate('/videography')}>
@@ -51,7 +55,7 @@ export function VhsShelf() {
         </group>
 
         <group position={[0.2, 0, -0.09]} rotation={[0, -0.95, 0]}>
-          <Model name="sonycam" />
+          <Model name="sonycam" castShadow={heavy} />
         </group>
       </group>
     </Interactive>

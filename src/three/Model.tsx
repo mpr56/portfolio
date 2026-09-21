@@ -120,11 +120,37 @@ type ModelProps = {
    * can't see it. This measures the real thing after load and corrects it.
    */
   ground?: boolean
+  /**
+   * Whether this model takes part in the shadow passes.
+   *
+   * Safe to change at runtime, unlike a *light's* castShadow — a mesh flag is
+   * shadow-pass membership, not a shader variant, so nothing recompiles. The
+   * heavy models are excluded on lower tiers: they are most of the scene's
+   * triangles and they were being redrawn in full by two separate depth
+   * passes. ContactShadows grounds them either way.
+   */
+  castShadow?: boolean
 }
 
-export function Model({ name, position, rotation, scale, ground = false }: ModelProps) {
+export function Model({
+  name,
+  position,
+  rotation,
+  scale,
+  ground = false,
+  castShadow = true,
+}: ModelProps) {
   const object = useModel(name)
   const holder = useRef<THREE.Group>(null)
+
+  // useModel hands out clones with castShadow already on, so this is an
+  // override rather than the initial setting. Re-runs when the flag moves,
+  // which is what makes the quality ratchet able to reach it.
+  useLayoutEffect(() => {
+    object.traverse((o) => {
+      if ((o as THREE.Mesh).isMesh) o.castShadow = castShadow
+    })
+  }, [object, castShadow])
 
   useLayoutEffect(() => {
     object.updateMatrixWorld(true)
