@@ -1,9 +1,12 @@
 import { Suspense, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { AdaptiveDpr, PerformanceMonitor, Preload } from '@react-three/drei'
+import { Preload } from '@react-three/drei'
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
 import type { BloomEffect, VignetteEffect } from 'postprocessing'
+
+import { FrameDriver } from './FrameDriver'
+import { useQuality } from '../quality'
 
 import { ThemeDriver, themeMix } from './theme'
 import { Rig } from './Rig'
@@ -69,14 +72,20 @@ function Effects() {
 
 export function Experience() {
   const setHovered = useScene((s) => s.setHovered)
-  // Drop the pixel ratio ceiling if the GPU can't hold frame rate.
-  const [dpr, setDpr] = useState(1.5)
+
+  // Frozen at mount: <FrameDriver> owns the pixel ratio from here, and a live
+  // dpr prop would overwrite whatever it set on the next render of <Canvas>.
+  const [initialDpr] = useState(() => useQuality.getState().dynamic.dpr)
 
   return (
     <Canvas
       shadows
-      dpr={dpr}
-      gl={{ antialias: true, powerPreference: 'high-performance' }}
+      frameloop="never"
+      dpr={initialDpr}
+      // No antialias: the composer renders to its own target, so MSAA on the
+      // default framebuffer resolves nothing anybody sees. It has been paying
+      // for a buffer the scene never draws into.
+      gl={{ powerPreference: 'high-performance' }}
       camera={{ position: SHOTS['/'].position, fov: SHOTS['/'].fov, near: 0.1, far: 60 }}
       onCreated={({ scene, gl, camera }) => {
         // Seeded from the palette rather than a repeated literal: ThemeDriver
@@ -101,10 +110,9 @@ export function Experience() {
         document.body.style.cursor = 'auto'
       }}
     >
-      <PerformanceMonitor
-        onDecline={() => setDpr(1)}
-        onIncline={() => setDpr(Math.min(2, window.devicePixelRatio))}
-      />
+      {/* Owns the only rAF loop. Must come before ThemeDriver so its DOM
+          listeners are attached before the first frame is asked for. */}
+      <FrameDriver />
 
       {/* First child: seeds the day/night mix everything else samples. */}
       <ThemeDriver />
@@ -129,7 +137,6 @@ export function Experience() {
       </Suspense>
 
       <Effects />
-      <AdaptiveDpr pixelated />
     </Canvas>
   )
 }
