@@ -2,7 +2,7 @@ import { Suspense, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Preload } from '@react-three/drei'
-import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
+import { EffectComposer, Bloom, SMAA, Vignette } from '@react-three/postprocessing'
 import type { BloomEffect, VignetteEffect } from 'postprocessing'
 
 import { FrameDriver } from './FrameDriver'
@@ -44,12 +44,32 @@ import { Phone } from './props/Phone'
 function Effects() {
   const bloom = useRef<BloomEffect>(null)
   const vignette = useRef<VignetteEffect>(null)
+  const fixed = useQuality((s) => s.fixed)
+  const luminanceScale = useQuality((s) => s.dynamic.luminanceScale)
 
   useFrame(() => {
     const night = themeMix.value
     if (bloom.current) {
       bloom.current.intensity = mix(PALETTE.day.bloom, PALETTE.night.bloom, night)
       bloom.current.luminanceMaterial.threshold = mix(0.85, 0.62, night)
+
+      /**
+       * Scale the bloom's luminance pass, not the effect's own resolution.
+       *
+       * <Bloom resolutionScale> sets BloomEffect.resolution, and under
+       * mipmapBlur — which this scene uses — that is dead: setSize hands the
+       * full size to both the luminance pass and the mipmap chain and never
+       * consults it. The luminance pass has its own Resolution, it is the one
+       * full-resolution pass in the bloom, and its output is what feeds the
+       * mipmap chain.
+       *
+       * Set here rather than in an effect because the composer sizes its
+       * passes in an effect of its own, and a scale applied before the pass
+       * has a base size would resize it to nothing. Guarded, so this is a
+       * comparison per frame and an assignment only when the ratchet moves.
+       */
+      const resolution = bloom.current.luminancePass.resolution
+      if (resolution.scale !== luminanceScale) resolution.scale = luminanceScale
     }
     if (vignette.current) {
       vignette.current.darkness = mix(PALETTE.day.vignette, PALETTE.night.vignette, night)
@@ -57,7 +77,17 @@ function Effects() {
   })
 
   return (
-    <EffectComposer enableNormalPass={false}>
+    /*
+     * multisampling comes from the frozen half of the profile and never moves:
+     * changing it rebuilds every render target the composer owns.
+     *
+     * The default was 8, on a half-float target at DPR 2 — eight samples per
+     * pixel for a scene whose only thin geometry is one wall sign. High tier
+     * keeps real MSAA at 2x because that sign is extruded Text3D with
+     * sub-pixel bevels and SMAA handles thin geometry worse; everything below
+     * high takes SMAA or nothing.
+     */
+    <EffectComposer enableNormalPass={false} multisampling={fixed.multisampling}>
       <Bloom
         ref={bloom}
         mipmapBlur
@@ -66,6 +96,8 @@ function Effects() {
         luminanceSmoothing={0.22}
       />
       <Vignette ref={vignette} offset={0.28} darkness={PALETTE.day.vignette} eskil={false} />
+      {/* Last, so it antialiases the graded image rather than the raw one. */}
+      {fixed.smaa && <SMAA />}
     </EffectComposer>
   )
 }
