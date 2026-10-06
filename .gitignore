@@ -3,5 +3,12 @@ TODO
 dist
 tsconfig.tsbuildinfo
 shots
+perf
+
+# Raw Sketchfab downloads that optimize.mjs reads from — ~190 MB, and the
+# web-ready output in public/models is what the site actually ships. Keep
+# your own copies: losing these means every future budget change has to be
+# re-derived from already-compressed assets, which stacks loss on loss.
+internet3dmodels
 
 graphify-out
