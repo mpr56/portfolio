@@ -26,6 +26,7 @@ import {
   flatten,
   join,
   metalRough,
+  palette,
   clearNodeParent,
   clearNodeTransform,
 } from '@gltf-transform/functions'
@@ -39,26 +40,53 @@ const SRC = 'internet3dmodels'
 const OUT = 'public/models'
 
 /**
- * Per-model budgets. `texture` is the max edge length in px; `ratio` is the
- * target triangle count as a fraction of the original (1 = leave alone).
+ * Maps the shader reads as data rather than as an image. Surface normals and
+ * roughness vary smoothly across a surface and are never resolved per-texel by
+ * a viewer, so these run at half the colour budget — a quarter of the memory.
+ */
+const DATA_SLOTS = /normalTexture|metallicRoughnessTexture|occlusionTexture/
+
+/**
+ * Per-model budgets. `texture` is the max edge length in px for the colour
+ * maps — data maps take half that, see DATA_SLOTS; `ratio` is the target
+ * triangle count as a fraction of the original (1 = leave alone).
  *
  * Budgets are set by how large the object appears on screen, not by how
  * detailed the source is: the camcorder is a few hundred pixels tall in the
  * widest shot, so 1024 maps on it would be waste.
+ *
+ * The `on screen` figures in the comments below are the object's largest
+ * dimension in native pixels, in whichever SHOT in data/scene.ts frames it
+ * largest, at a 1000px-tall viewport and DPR 1.5. They are computed from the
+ * camera positions rather than eyeballed, and they are the justification for
+ * every number here: a texture wider than the object is ever drawn is memory
+ * and sampling bandwidth spent on detail no display can resolve.
+ *
+ * Whoever changes a SHOT should re-derive these. Moving a camera closer to
+ * something silently under-budgets it, and the failure is a soft, muddy
+ * surface rather than anything that looks like a bug.
  */
 const MODELS = {
   // `keep` isolates one object from a file that ships a whole product range.
   // `size` rescales to real-world metres on the named axis.
+  // ~1040px on screen in its own /projects shot, where the camera is closest
+  // to it. 2048 was double what that can resolve, and the panel itself is
+  // covered by an emissive plane at runtime, so a third of the map was never
+  // visible at any size.
   monitor: {
     file: 'basic_pc_monitors.glb',
-    texture: 2048,
+    texture: 1024,
     ratio: 1,
     keep: ['Object_4'], // the ultrawide; Object_8 is the standard 24"
     size: { axis: 'x', value: 0.92 },
   },
+  // The worst offender in the set before this change: 15 maps at 1024², 84 MB
+  // of GPU memory, for an object that no shot ever approaches. It sits at the
+  // far end of the long wing and peaks at ~256px on screen, in /about. 512
+  // still leaves it double the resolution it can show.
   vinyl: {
     file: 'vinyl_player_pioneer.glb',
-    texture: 1024,
+    texture: 512,
     ratio: 1,
     size: { axis: 'x', value: 0.44 }, // ships with the dust cover hinged open
   },
@@ -97,9 +125,6 @@ const MODELS = {
     size: { axis: 'z', value: 0.285 },
   },
   car3: {
-    // Kept at the repository root as the untouched download, alongside the
-    // F40 source. The pipeline writes the web-ready copy to public/models.
-    source: '.',
     file: '2018_mazda_rx-7_fd3s_fatal_stinger.glb',
     texture: 512,
     ratio: 0.45,
@@ -108,21 +133,27 @@ const MODELS = {
   },
   // The videography cluster. Three real camcorders rather than the earlier
   // DSLR + generic camcorder pair.
+  // All three peak between 410 and 590px, in /videography — the shot built
+  // around them — and in the grazing edge of /contact. 512 is the honest
+  // budget for the whole cluster; 1024 was a guess made before anything here
+  // was measured.
   camcorder: {
     file: 'camcorder.glb',
-    texture: 1024,
+    texture: 512,
     ratio: 1,
     size: { axis: 'z', value: 0.26 }, // source is ~100× real scale
   },
+  // The largest of the three and the one /videography actually aims at, so it
+  // is the one to watch if 512 turns out to be too tight anywhere.
   vhscam: {
     file: 'panasonic_m5_vhs_camcorder__game_ready_model.glb',
-    texture: 1024,
+    texture: 512,
     ratio: 1,
     size: { axis: 'z', value: 0.34 },
   },
   sonycam: {
     file: 'sony_camcorder.glb',
-    texture: 1024,
+    texture: 512,
     ratio: 0.25,
     error: 0.01,
     size: { axis: 'z', value: 0.24 },
@@ -277,6 +308,14 @@ for (const [name, cfg] of targets) {
     unskin(),
     dedup(),
     flatten(),
+    // Before join, because join can only merge primitives that already share a
+    // material. The cars arrive as dozens of separate materials that differ
+    // only by a solid colour — a paint, a plastic, a rubber — and each one is
+    // its own draw call for the life of the page. palette bakes those colours
+    // into a few pixels of shared texture so the materials become identical,
+    // and join then collapses the primitives behind them. Materials that carry
+    // real textures are left alone. No-ops below `min` unique colours.
+    palette({ min: 3 }),
     join(),
     // After join: the mesh names used by `keep` are the post-join ones.
     normalize(cfg),
@@ -290,10 +329,30 @@ for (const [name, cfg] of targets) {
       : []),
     resample(),
     prune({ keepAttributes: false, keepLeaves: false }),
+    // Two passes, because `texture` is a budget for what the eye reads, not
+    // for every map on the material. Normal, metallic-roughness and occlusion
+    // are data the shader samples to modulate colour rather than images anyone
+    // looks at, and halving them is the single cheapest win in this file: they
+    // outnumber the colour maps roughly two to one, and each halving is 4× the
+    // memory.
+    //
+    // The first pass deliberately carries no `slots` filter. Filtering it to
+    // COLOUR_SLOTS looks tidier and is wrong: a texture matched by no filter
+    // is not resized at all, so anything in an unexpected slot — the lamp has
+    // one — sails through at full source resolution and the model comes out
+    // larger than it went in. Capping everything first and then halving the
+    // subset is safe because `resize` is a ceiling, never an upscale.
     textureCompress({
       encoder: sharp,
       targetFormat: 'webp',
       resize: [cfg.texture, cfg.texture],
+      quality: 82,
+    }),
+    textureCompress({
+      encoder: sharp,
+      targetFormat: 'webp',
+      slots: DATA_SLOTS,
+      resize: [cfg.texture / 2, cfg.texture / 2],
       quality: 82,
     }),
     draco({ quantizePosition: 14, quantizeNormal: 10, quantizeTexcoord: 12 }),
