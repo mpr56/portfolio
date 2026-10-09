@@ -1,6 +1,8 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useScene } from '../store'
+import { toSimple } from '../view'
 import { Onboarding } from './Onboarding'
+import { SimpleTip } from './SimpleTip'
 import { SoundIcon } from './SoundIcon'
 
 /** Persistent chrome: sound, menu, headline, footer, and the side tab. */
@@ -120,10 +122,14 @@ export function Hud() {
       </Link>
 
       <footer className="footer">
-        © {new Date().getFullYear()} Manav. All rights reserved. <Link to="/about">About</Link>
+        © {new Date().getFullYear()} Manav. All rights reserved. <Link to="/about">About</Link> ·{' '}
+        <Link to={toSimple(pathname)}>Simple view</Link>
       </footer>
 
-      <Onboarding />
+      <div className="tips">
+        <SimpleTip />
+        <Onboarding />
+      </div>
     </div>
   )
 }

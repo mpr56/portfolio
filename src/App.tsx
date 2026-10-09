@@ -1,35 +1,29 @@
-import { Route, Routes } from 'react-router-dom'
-import { Experience } from './three/Experience'
-import { Hud } from './ui/Hud'
-import { Intro } from './ui/Intro'
-import { Scrubber } from './ui/Scrubber'
-import { Projects } from './ui/pages/Projects'
-import { ProjectPage } from './ui/pages/ProjectPage'
-import { Videography } from './ui/pages/Videography'
-import { About } from './ui/pages/About'
-import { Contact } from './ui/pages/Contact'
+import { lazy, Suspense } from 'react'
+import { Navigate, useLocation } from 'react-router-dom'
+import { IntroFrame } from './ui/IntroFrame'
+import { SimpleSite } from './simple/SimpleSite'
+import { hasWebGL, isSimplePath, prefersSimple, toSimple } from './view'
+
+const Room = lazy(() => import('./Room'))
 
 /**
- * The canvas lives outside <Routes> on purpose: routes swap the DOM panel over
- * the top while the same WebGL scene keeps running and the camera eases to that
- * page's framing. Nothing is ever torn down and rebuilt.
+ * Two sites over one set of content: the 3D room, and a plain simple view at
+ * /simple for older devices and anyone who just wants the information. Only
+ * the room pulls in three.js, so the simple view stays light.
+ *
+ * A browser with no WebGL, or a visitor who chose the simple view before, is
+ * sent to the simple twin of whatever room URL they asked for.
  */
 export default function App() {
+  const { pathname } = useLocation()
+
+  if (isSimplePath(pathname)) return <SimpleSite />
+  if (prefersSimple() || !hasWebGL()) return <Navigate to={toSimple(pathname)} replace />
+
   return (
-    <>
-      <Experience />
-      <Hud />
-      <Scrubber />
-      <Routes>
-        <Route path="/" element={null} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/projects/:slug" element={<ProjectPage />} />
-        <Route path="/videography" element={<Videography />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="*" element={null} />
-      </Routes>
-      <Intro />
-    </>
+    // The room's chunk is the heavy one; the loading screen covers it too.
+    <Suspense fallback={<IntroFrame progress={0} />}>
+      <Room />
+    </Suspense>
   )
 }

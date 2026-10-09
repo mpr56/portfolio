@@ -152,13 +152,21 @@ a {
   text-decoration: underline;
 }
 
-/* First-visit tip. Bottom-right is the one corner nothing else claims: xray
-   owns top-left, the headline top-center, the sidetab the right edge's
-   middle, the footer bottom-center. */
-.onboarding {
+/* First-visit tips: onboarding bottom-right, the simple-view pointer
+   bottom-left. Those are the corners nothing else claims: xray owns top-left,
+   the headline top-center, the sidetab the right edge's middle, the footer
+   bottom-center. One row holds both, so on a phone they can stack instead. */
+.tips {
   position: absolute;
+  left: 26px;
   right: 26px;
   bottom: 26px;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  pointer-events: none;
+}
+.onboarding {
   width: 300px;
   padding: 16px 18px 17px;
   border-radius: 12px;
@@ -201,6 +209,23 @@ a {
 }
 .onboarding__dismiss:hover {
   background: rgba(255, 255, 255, 0.12);
+}
+/* Onboarding keeps the right-hand corner even when it is alone in the row. */
+.tips > .onboarding:not(.simpletip) {
+  margin-left: auto;
+}
+.onboarding__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+.onboarding__actions .onboarding__dismiss {
+  margin-top: 0;
+}
+.onboarding__go {
+  text-decoration: none;
+  border-color: rgba(127, 227, 212, 0.5);
+  color: #7fe3d4;
 }
 @keyframes onboarding-in {
   from {
@@ -908,6 +933,18 @@ a {
   transform-origin: left;
   transition: transform 0.3s ease;
 }
+.intro__simple {
+  font-size: 12.5px;
+  color: rgba(242, 246, 252, 0.55);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(242, 246, 252, 0.2);
+  padding-bottom: 2px;
+  transition: color 0.25s ease;
+}
+.intro__simple:hover,
+.intro__simple:focus-visible {
+  color: #f2f6fc;
+}
 .intro__enter {
   appearance: none;
   border: 1px solid rgba(255, 255, 255, 0.26);
@@ -981,11 +1018,23 @@ a {
     right: 16px;
     width: auto;
   }
-  .onboarding {
+  .tips {
     right: 16px;
     bottom: 96px;
     left: 16px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .onboarding {
     width: auto;
+  }
+  .tips > .onboarding:not(.simpletip) {
+    margin-left: 0;
+  }
+  /* Two cards would bury a phone screen: the simple-view pointer waits until
+     onboarding has been dismissed. */
+  .simpletip:not(:only-child) {
+    display: none;
   }
   .headline {
     top: 78px;

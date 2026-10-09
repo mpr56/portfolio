@@ -1,0 +1,489 @@
+/* ------------------------------------------------------------ simple view */
+/* Black screen, glowing orbs, a big grey menu with the selection lit up: an
+   old console boot menu. Everything here is plain DOM and CSS, no WebGL. */
+.simple {
+  --s-bg: #000;
+  --s-ink: #e9ebee;
+  --s-text: #a8adb4;
+  --s-dim: #74777c;
+  --s-faint: #4a4c50;
+  --s-line: rgba(255, 255, 255, 0.09);
+  --s-blue: #4fa8ea;
+  /* The selection glows in the room's daytime backdrop (PALETTE.day.background
+     in src/data/scene.ts, copied rather than imported: scene.ts pulls in
+     three.js). The text itself is a pale tint of it so it reads on black. */
+  --s-glow: #6f8571;
+  --s-sel: #d3e2cf;
+  --s-shine: 0 0 8px var(--s-glow), 0 0 22px var(--s-glow);
+  --s-menu: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* body is overflow: hidden for the room, so this scrolls on its own. */
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--s-bg);
+  color: var(--s-text);
+}
+/* Faint scanlines, for the CRT grain of the original. */
+.simple::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.22) 0 1px,
+    transparent 1px 3px
+  );
+}
+.simple a {
+  color: var(--s-blue);
+  text-decoration: none;
+}
+.simple a:hover {
+  text-decoration: underline;
+}
+.simple :focus-visible {
+  outline: 2px solid var(--s-blue);
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------ orbs */
+/* Sized in em so the same cluster shrinks to a logo by changing font-size. */
+.orbs {
+  position: relative;
+  font-size: 10px;
+  width: 23em;
+  height: 12.5em;
+}
+.orbs--small {
+  font-size: 2.6px;
+}
+.orb {
+  position: absolute;
+  width: 8em;
+  height: 8em;
+  margin: -4em 0 0 -4em;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle closest-side,
+    #fff 0,
+    #f2f5ff 7%,
+    #aebcff 15%,
+    rgba(92, 108, 240, 0.62) 32%,
+    rgba(52, 58, 184, 0.24) 60%,
+    transparent 100%
+  );
+  animation: orb-drift var(--t, 7s) ease-in-out infinite alternate;
+}
+.orb:nth-child(1) { left: 3em; top: 3.5em; --dx: 0.6em; --dy: -0.4em; --t: 6.5s; }
+.orb:nth-child(2) { left: 9.7em; top: 3.5em; --dx: -0.5em; --dy: 0.5em; --t: 8s; }
+.orb:nth-child(3) { left: 7.9em; top: 7em; --dx: 0.4em; --dy: 0.6em; --t: 7.2s; }
+.orb:nth-child(4) { left: 18.8em; top: 6.3em; --dx: -0.4em; --dy: -0.6em; --t: 9s; }
+.orb:nth-child(5) { left: 18.8em; top: 9em; --dx: 0.5em; --dy: 0.3em; --t: 7.8s; }
+
+@keyframes orb-drift {
+  from {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.85;
+  }
+  to {
+    transform: translate(var(--dx), var(--dy)) scale(1.06);
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------------ home */
+.shome {
+  position: relative;
+  min-height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 48px 24px 72px;
+}
+.shome__art {
+  justify-self: center;
+}
+.shome__menu {
+  justify-self: center;
+  text-align: center;
+}
+.shome__menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.smenu__item {
+  display: inline-block;
+  font-family: var(--s-menu);
+  font-size: clamp(28px, 3.4vw, 38px);
+  font-weight: 700;
+  line-height: 1.24;
+  letter-spacing: 0.01em;
+  transition:
+    color 0.15s ease,
+    text-shadow 0.15s ease;
+}
+/* The menu is grey until selected, whatever .simple a says. */
+.simple .smenu__item {
+  color: var(--s-dim);
+  text-decoration: none;
+}
+.simple .smenu__item.is-active {
+  color: var(--s-sel);
+  text-shadow: var(--s-shine);
+}
+.simple .smenu__item:focus-visible {
+  outline: none;
+}
+.smenu__item.is-disabled {
+  color: var(--s-faint);
+}
+.shome__hint {
+  min-height: 1.4em;
+  margin: 22px 0 0;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--s-faint);
+}
+.shome__foot {
+  position: absolute;
+  bottom: 22px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--s-faint);
+}
+
+/* ----------------------------------------------------------------- pages */
+.spage {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 64px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 56px 32px 80px;
+}
+.snav {
+  position: sticky;
+  top: 56px;
+  align-self: start;
+}
+.snav__home {
+  display: inline-block;
+  margin-bottom: 18px;
+}
+.snav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.snav__item {
+  display: inline-block;
+  font-family: var(--s-menu);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+.simple .snav__item {
+  color: var(--s-dim);
+}
+.simple .snav__item:hover {
+  color: var(--s-ink);
+  text-decoration: none;
+}
+.simple .snav__item.is-active {
+  color: var(--s-sel);
+  text-shadow: var(--s-shine);
+}
+
+.sbody {
+  max-width: 660px;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.sbody p {
+  margin: 0 0 1.1em;
+}
+.simple .sbody__back {
+  display: inline-block;
+  margin-bottom: 28px;
+  font-size: 13px;
+  color: var(--s-dim);
+}
+.simple .sbody__back:hover {
+  color: var(--s-blue);
+  text-decoration: none;
+}
+.sbody__eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--s-blue);
+}
+.sbody .sbody__eyebrow {
+  margin: 0 0 8px;
+}
+.sbody__title {
+  margin: 0 0 28px;
+  font-family: var(--s-menu);
+  font-size: clamp(32px, 5vw, 44px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--s-ink);
+}
+.sbody__lede {
+  color: #c9cdd2;
+}
+.sbody .sbody__note {
+  margin-top: 28px;
+  font-size: 14px;
+  color: var(--s-dim);
+}
+
+/* Label / value pairs (About). */
+.sfacts {
+  margin: 32px 0 0;
+  border-top: 1px solid var(--s-line);
+}
+.sfacts div {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--s-line);
+}
+.sfacts dt {
+  color: var(--s-dim);
+}
+.sfacts dd {
+  margin: 0;
+  color: var(--s-ink);
+}
+
+/* Linked rows (Projects, Contact). */
+.slist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--s-line);
+}
+.simple .slist__item {
+  display: grid;
+  gap: 4px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--s-line);
+  color: var(--s-text);
+  transition: color 0.15s ease;
+}
+.simple .slist__item:hover {
+  text-decoration: none;
+}
+.slist__item strong {
+  font-family: var(--s-menu);
+  font-size: 20px;
+  color: var(--s-ink);
+  transition:
+    color 0.15s ease,
+    text-shadow 0.15s ease;
+}
+.slist__item:hover strong,
+.slist__item:focus-visible strong {
+  color: var(--s-sel);
+  text-shadow: var(--s-shine);
+}
+.slist__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+.slist__head > span {
+  font-size: 13px;
+  color: var(--s-dim);
+}
+.slist__role {
+  font-size: 13px;
+  color: var(--s-dim);
+}
+.slist__blurb {
+  font-size: 15px;
+}
+.simple .slist__item--row {
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 16px;
+}
+.slist__item--row svg {
+  color: var(--s-dim);
+  align-self: center;
+}
+
+/* Project detail. */
+.ssection {
+  margin-top: 36px;
+}
+.ssection h2 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--s-dim);
+}
+.sbullets {
+  margin: 0;
+  padding-left: 1.1em;
+}
+.sbullets li {
+  margin-bottom: 0.6em;
+}
+.sbullets li::marker {
+  color: var(--s-blue);
+}
+.sbody .sstack {
+  margin: 0;
+  color: var(--s-ink);
+}
+.slinks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Live preview. Borrows .demo__frame from the room for its zoom; only the
+   sizing differs, since there is no flex column here to fill. */
+.sdemo {
+  margin: 32px 0 0;
+}
+.sdemo__frame {
+  flex: none;
+  aspect-ratio: 16 / 10;
+  border-radius: 10px;
+  border-color: var(--s-line);
+  box-shadow: 0 0 40px rgba(111, 133, 113, 0.18);
+  /* Above the scanlines: they suit the menu, not someone else's website. */
+  z-index: 1;
+}
+.sdemo figcaption {
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--s-dim);
+}
+
+/* Videography. */
+.sfilms {
+  display: grid;
+  gap: 32px;
+}
+.sfilm {
+  margin: 0;
+}
+.sfilm video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #0b0b0c;
+  border: 1px solid var(--s-line);
+}
+.sfilm figcaption {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--s-dim);
+}
+.sfilm figcaption strong {
+  margin-right: 6px;
+  color: var(--s-ink);
+}
+.sbody .sfilms__more {
+  margin: 0;
+  color: var(--s-dim);
+}
+
+/* FAQs. */
+.sfaqs {
+  margin: 0;
+}
+.sfaqs div {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--s-line);
+}
+.sfaqs div:first-child {
+  border-top: 1px solid var(--s-line);
+}
+.sfaqs dt {
+  margin-bottom: 6px;
+  font-family: var(--s-menu);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--s-ink);
+}
+.sfaqs dd {
+  margin: 0;
+}
+
+/* --------------------------------------------------------------- mobile */
+@media (max-width: 760px) {
+  .shome {
+    grid-template-columns: 1fr;
+    align-content: center;
+    gap: 40px;
+    padding: 40px 16px 72px;
+  }
+  .orbs:not(.orbs--small) {
+    font-size: 8px;
+  }
+
+  .spage {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 24px 16px 64px;
+  }
+  /* The side nav becomes a wrapped row across the top. */
+  .snav {
+    position: static;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .snav__home {
+    margin: 0;
+    flex: none;
+  }
+  .snav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 14px;
+  }
+  .snav__item {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .sbody__back {
+    margin-bottom: 18px;
+  }
+  .sfacts div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .simple .slist__item--row {
+    grid-template-columns: 1fr auto;
+    gap: 4px 16px;
+  }
+  .slist__item--row .slist__role {
+    grid-column: 1;
+  }
+  .slist__item--row svg {
+    grid-row: 1;
+    grid-column: 2;
+  }
+}
